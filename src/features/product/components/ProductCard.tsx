@@ -19,12 +19,12 @@ export default function ProductCard({
 }) {
   return (
     <div 
-      className="group border border-mistral-black/10 p-4 hover:border-mistral-orange transition-all duration-200 cursor-pointer bg-white hover:bg-warm-ivory relative hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(250,82,15,0.1)]"
+      className="group border border-mistral-black/10 dark:border-warm-ivory/20 p-4 hover:border-mistral-orange transition-all duration-200 cursor-pointer bg-white dark:bg-mistral-black hover:bg-warm-ivory dark:hover:bg-warm-ivory/10 relative hover:-translate-y-1 hover:shadow-mistral dark:hover:shadow-none"
       onClick={onClick}
     >
       <div className="flex items-start gap-4">
         {/* Strict sharp container for images */}
-        <div className="w-20 h-20 bg-mistral-black/5 flex-shrink-0 flex items-center justify-center text-[10px] tracking-widest text-mistral-black/40 uppercase overflow-hidden border border-mistral-black/5 group-hover:border-mistral-orange/20 transition-colors">
+        <div className="w-20 h-20 bg-mistral-black/5 dark:bg-warm-ivory/5 flex-shrink-0 flex items-center justify-center text-[10px] tracking-widest text-mistral-black/40 dark:text-warm-ivory/40 uppercase overflow-hidden border border-mistral-black/5 group-hover:border-mistral-orange/20 transition-colors">
           {image && image !== 'No IMG' ? (
             <img src={image} alt={title || 'Product'} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-300" />
           ) : (
@@ -33,17 +33,17 @@ export default function ProductCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
-            <h3 className="font-normal text-[18px] leading-tight line-clamp-1 text-mistral-black tracking-tighter group-hover:text-mistral-orange transition-colors">
+            <h3 className="font-normal text-[18px] leading-[1.15] line-clamp-1 text-mistral-black dark:text-warm-ivory tracking-[-2.05px] group-hover:text-mistral-orange transition-colors">
               {title || 'Product Title'}
             </h3>
             {source && (
-              <span className="text-[10px] font-normal bg-cream px-2 py-0.5 text-mistral-black uppercase tracking-widest flex-shrink-0 border border-mistral-black/10">
+              <span className="text-[10px] font-normal bg-cream dark:bg-mistral-black/50 px-2 py-0.5 text-mistral-black dark:text-warm-ivory uppercase tracking-widest flex-shrink-0 border border-mistral-black/10 dark:border-warm-ivory/20 transition-colors duration-200">
                 {source}
               </span>
             )}
           </div>
-          <p className="text-[16px] text-mistral-black mt-1.5 font-normal tracking-tight">{price || 'Pricing N/A'}</p>
-          <p className="text-[14px] font-normal text-mistral-black/70 mt-2 line-clamp-2 leading-relaxed">{description || 'No description available.'}</p>
+          <p className="text-[16px] text-mistral-black dark:text-warm-ivory mt-1.5 font-normal tracking-tight transition-colors duration-200">{price || 'Pricing N/A'}</p>
+          <p className="text-[14px] font-normal text-mistral-black/70 dark:text-warm-ivory/70 mt-2 line-clamp-2 leading-relaxed transition-colors duration-200">{description || 'No description available.'}</p>
         </div>
       </div>
       

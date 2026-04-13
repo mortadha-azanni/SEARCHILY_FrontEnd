@@ -16,6 +16,9 @@ const AuthPage = React.lazy(() => import('../pages/public/AuthPage'));
 // App Pages (Lazy)
 const AIChatPage = React.lazy(() => import('../pages/app/AIChatPage'));
 const ProfilePage = React.lazy(() => import('../pages/app/ProfilePage'));
+const EditProfilePage = React.lazy(() => import('../pages/app/EditProfilePage'));
+const BillingPage = React.lazy(() => import('../pages/app/BillingPage'));
+const NotificationsPage = React.lazy(() => import('../pages/app/NotificationsPage'));
 
 // Admin Pages (Lazy)
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'));
@@ -50,6 +53,9 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Suspense fallback={<PageLoader />}><AIChatPage /></Suspense> },
           { path: 'profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
+          { path: 'profile/edit', element: <Suspense fallback={<PageLoader />}><EditProfilePage /></Suspense> },
+          { path: 'profile/billing', element: <Suspense fallback={<PageLoader />}><BillingPage /></Suspense> },
+          { path: 'profile/notifications', element: <Suspense fallback={<PageLoader />}><NotificationsPage /></Suspense> },
         ]
       }
     ]
@@ -69,4 +75,6 @@ export const router = createBrowserRouter([
       }
     ]
   },
-]);
+], {
+  basename: import.meta.env.BASE_URL
+});

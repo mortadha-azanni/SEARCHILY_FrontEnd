@@ -1,16 +1,21 @@
-# React + Vite
+# SEARCHILY – Mistral Brutalism AI Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React-based AI-powered product discovery platform, sporting a distinct **Mistral Brutalism** design aesthetic (massive typography, aggressive contrast, warm/yellow-orange color blocks, no global dark mode). 
 
-Currently, two official plugins are available:
+## Technical Overview
+- **Vite + React (TypeScript)** setup.
+- **Tailwind CSS** strictly adhering to `DESIGN.md` guidelines for Mistral branding parameters.
+- **Mock WebSocket System**: Currently decoupled to accept payloads wrapped via `adaptSocketPayload` in `useChatSocket.ts` to allow local iteration independently from the `python/fastapi` backend.
+- **Auth Provider**: Simple cross-tab synced auth via Context and LocalStorage (`storage` event listeners).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Developer Resources
+To get a full understanding of the app, check the documentation directories:
+1. `.design/DESIGN.md` - Strictly sets limits and styles for Mistral Brutalism.
+2. `.agent/` - Holds specs regarding the Frontend Folder Architecture, the Chat/WebSocket orchestration, Error Handling rules, and general UI/UX philosophies.
+3. `.backend/FRONTEND_INTEGRATION_GUIDE.md` - Future reference for backend connecting via `.env` pointing to port `:8000`.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Running the Project
+```bash
+npm install
+npm run dev
+```

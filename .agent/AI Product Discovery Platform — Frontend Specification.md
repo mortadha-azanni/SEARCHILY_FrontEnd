@@ -30,17 +30,17 @@ It is an **AI search + aggregation interface**.
 
 ### Design Style
 
-* Dark mode only
-* Clean futuristic UI
-* Soft gradients (blue/purple)
-* Minimal glassmorphism (low blur)
-* Smooth transitions (no heavy effects)
+* **Mistral Brutalism Theme** (Warm Ivory, Block Gold, Mistral Orange)
+* Flat, high-contrast, no glassmorphism, no borders on most surfaces except sharp architectural lines.
+* Massive display typography (82px) with aggressive negative letter-spacing for headers.
+* Warm golden shadow systems instead of cool grays.
+* Light mode only (in accordance with the Mistral Brutalism specification).
 
 ### Layout Philosophy
 
 * Focus on **speed + clarity**
-* Avoid clutter
-* Prioritize **results visibility over chat**
+* Bold, European declarative UX.
+* Prioritize **results visibility over chat**.
 
 ---
 
@@ -352,8 +352,7 @@ Keep animations:
 * Filters (price, category)
 * Sorting options
 * Model selection
-* Light mode
-* Real authentication
+* Real authentication (connected to backend)
 * Saved products
 
 ---
@@ -366,12 +365,14 @@ The priority is:
 
 Avoid:
 
+* Soft curves and glassmorphism (violates Mistral Brutalism)
 * Over-design
 * Unnecessary pages
 * Redundant flows
 
 Focus on:
 
+* Bold Typography
 * Performance
 * Simplicity
 * Trust in results

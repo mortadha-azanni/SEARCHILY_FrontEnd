@@ -29,7 +29,7 @@ export default function AdminETLPanel() {
   return (
     <div className="p-6 md:p-8 flex-1 w-full bg-warm-ivory">
       <div className="mb-8">
-        <h1 className="text-3xl font-normal tracking-tight text-mistral-black break-words">ETL Management</h1>
+        <h1 className="text-[32px] font-normal tracking-tight text-mistral-black break-words">ETL Management</h1>
         <p className="text-mistral-black/60 mt-2">Manage data pipelines, synchronization, and catalog indexing.</p>
       </div>
 
@@ -37,28 +37,28 @@ export default function AdminETLPanel() {
         
         {/* Status Card */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white border border-mistral-black/10 rounded-none p-6 shadow-sm">
-            <h2 className="text-sm font-normal uppercase tracking-widest text-mistral-black/50 mb-6">System Status</h2>
+          <div className="bg-white border border-mistral-black/10 rounded-none p-6 shadow-[0_8px_30px_rgba(250,82,15,0.05)]">
+            <h2 className="text-[14px] font-normal uppercase tracking-widest text-mistral-black/50 mb-6">System Status</h2>
             
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-mistral-black/10">
-                <span className="text-sm font-normal text-mistral-black">Pipeline State</span>
+                <span className="text-[14px] font-normal text-mistral-black">Pipeline State</span>
                 <span className="inline-flex items-center gap-2 text-xs font-normal uppercase tracking-wider text-green-700 bg-green-100 px-2 py-1 rounded-none">
                   <span className="w-2 h-2 rounded-none bg-green-500 animate-pulse"></span>
                   Healthy
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-mistral-black/10">
-                <span className="text-sm font-normal text-mistral-black">Last Sync</span>
-                <span className="text-sm text-mistral-black/60 font-mono">10:45 AM (Today)</span>
+                <span className="text-[14px] font-normal text-mistral-black">Last Sync</span>
+                <span className="text-[14px] text-mistral-black/60 font-mono">10:45 AM (Today)</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-mistral-black/10">
-                <span className="text-sm font-normal text-mistral-black">Total Records</span>
-                <span className="text-sm text-mistral-black/60 font-mono">14.2M</span>
+                <span className="text-[14px] font-normal text-mistral-black">Total Records</span>
+                <span className="text-[14px] text-mistral-black/60 font-mono">14.2M</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="text-sm font-normal text-mistral-black">Index Latency</span>
-                <span className="text-sm text-mistral-black/60 font-mono">42ms</span>
+                <span className="text-[14px] font-normal text-mistral-black">Index Latency</span>
+                <span className="text-[14px] text-mistral-black/60 font-mono">42ms</span>
               </div>
             </div>
 
@@ -79,12 +79,12 @@ export default function AdminETLPanel() {
 
         {/* Logs Panel */}
         <div className="lg:col-span-2">
-          <div className="bg-mistral-black rounded-none shadow-sm flex flex-col h-[500px] max-h-[60vh] overflow-hidden">
+          <div className="bg-mistral-black rounded-none shadow-[0_8px_30px_rgba(250,82,15,0.05)] flex flex-col h-[500px] max-h-[60vh] overflow-hidden">
             <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-mistral-black/90">
-              <h2 className="text-sm font-normal tracking-widest text-white/50 uppercase">Console Output</h2>
+              <h2 className="text-[14px] font-normal tracking-widest text-white/50 uppercase">Console Output</h2>
               <span className="text-xs text-white/30 font-mono">Live</span>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 font-mono text-sm">
+            <div className="flex-1 overflow-y-auto p-6 font-mono text-[14px]">
               {logs.map((log, i) => (
                 <div key={i} className="mb-3 flex items-start gap-4">
                   <span className="text-white/40 shrink-0">{log.time}</span>

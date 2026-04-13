@@ -271,3 +271,9 @@ The frontend MUST NOT:
 All structured data MUST come via `products` event.
 
 ---
+
+## 🚨 Note on Backend Discrepancy
+
+Currently, the `.backend/FRONTEND_INTEGRATION_GUIDE.md` specifies a simpler protocol (`POST /search` -> return `task_id` -> open WS -> receive `{ state: "SUCCESS", result: "Markdown" }`). That contract does **not** provide streaming arrays of structured products required by the `ResultsPanel`. 
+
+Because of this gap, the `useChatSocket.ts` hook implements an `adaptSocketPayload()` adapter layer. The frontend operates on the `start | chunk | products | end` specification documented here utilizing local mock data, waiting for the backend to evolve to this multi-event streaming standard. When the backend is ready, `adaptSocketPayload` can either translate the backend messages or accept them natively.

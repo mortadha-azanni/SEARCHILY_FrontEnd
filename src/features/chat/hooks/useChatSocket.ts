@@ -4,13 +4,53 @@ import { mockGenerateAIResponse, MOCK_PRODUCTS } from '../../../mockdata/chatMoc
 
 type Listener = (payload: WsPayload) => void;
 
+// Decouple WebSocket state machine parsing raw payloads from real websocket
+export function adaptSocketPayload(rawPayload: unknown): WsPayload | null {
+  if (!rawPayload || typeof rawPayload !== 'object') {
+    throw new Error('Invalid payload format: Expected object');
+  }
+
+  const payloadObj = rawPayload as Record<string, unknown>;
+
+  if (typeof payloadObj.type !== 'string') {
+    throw new Error('Invalid payload format: Missing or invalid "type" field');
+  }
+  
+  const innerPayload = (payloadObj.payload || payloadObj) as Record<string, any>;
+
+  switch (payloadObj.type) {
+    case 'start':
+      if (typeof innerPayload.message_id !== 'string') throw new Error('start: Invalid message_id');
+      return { type: 'start', payload: { message_id: innerPayload.message_id } };
+    
+    case 'chunk':
+      if (typeof innerPayload.message_id !== 'string') throw new Error('chunk: Invalid message_id');
+      if (typeof (innerPayload.content || innerPayload.text) !== 'string') throw new Error('chunk: Invalid content');
+      return { type: 'chunk', payload: { message_id: innerPayload.message_id, content: innerPayload.content || innerPayload.text } };
+    
+    case 'products':
+      if (typeof innerPayload.message_id !== 'string') throw new Error('products: Invalid message_id');
+      if (!Array.isArray(innerPayload.items || innerPayload.data)) throw new Error('products: Invalid items array');
+      return { type: 'products', payload: { message_id: innerPayload.message_id, items: innerPayload.items || innerPayload.data } };
+    
+    case 'end':
+      if (typeof innerPayload.message_id !== 'string') throw new Error('end: Invalid message_id');
+      return { type: 'end', payload: { message_id: innerPayload.message_id } };
+    
+    case 'error':
+      return { type: 'error', payload: { message: String(innerPayload.message || innerPayload.error || 'Unknown error') } };
+    
+    default:
+      throw new Error(`[WebSocket] Unknown payload type: ${payloadObj.type}`);
+  }
+}
+
 export function useChatSocket() {
   const isConnected = useRef(false);
   const listeners = useRef<Listener[]>([]);
   const activeTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const connect = useCallback(() => {
-    // console.log('[WebSocket] Connected');
     isConnected.current = true;
   }, []);
 
@@ -19,17 +59,24 @@ export function useChatSocket() {
     activeTimeouts.current = [];
   }, []);
 
-  const dispatch = useCallback((payload: WsPayload) => {
-    listeners.current.forEach(cb => cb(payload));
+  // Adapter receives raw payload and adapts it before updating the app React state
+  const dispatchRaw = useCallback((rawPayload: unknown) => {
+    try {
+      const adapted = adaptSocketPayload(rawPayload);
+      if (!adapted) return;
+      listeners.current.forEach(cb => cb(adapted));
+    } catch (e) {
+      console.error('[WebSocket] Adaptation failed:', e);
+      // Depending on severity, we could emit an error payload to listeners here:
+      // listeners.current.forEach(cb => cb({ type: 'error', payload: { message: 'Adaptation failed' } }));
+    }
   }, []);
 
   const disconnect = useCallback(() => {
-    // console.log('[WebSocket] Disconnected');
     isConnected.current = false;
     clearTimeouts();
-    // Dispatch an error payload so consumers know the stream aborted abruptly
-    dispatch({ type: 'error', payload: { message: 'Connection lost' } });
-  }, [clearTimeouts, dispatch]);
+    dispatchRaw({ type: 'error', payload: { message: 'Connection lost' } });
+  }, [clearTimeouts, dispatchRaw]);
 
   const onMessage = useCallback((cb: Listener) => {
     listeners.current.push(cb);
@@ -42,14 +89,12 @@ export function useChatSocket() {
     if (!isConnected.current) {
       connect();
     }
-    // console.log(`[WebSocket] Sending: ${query}`);
     
-    // Exact protocol simulation as required
+    // Exact protocol simulation as required, feeding it into raw adapter
     const messageId = crypto.randomUUID();
     
     const startTimeout = setTimeout(() => {
-      // console.log(`[WebSocket] Received: { type: "start", payload: { message_id: "${messageId}" } }`);
-      dispatch({ type: 'start', payload: { message_id: messageId } });
+      dispatchRaw({ type: 'start', payload: { message_id: messageId } });
       
       const text = mockGenerateAIResponse(query);
       const chunks = text.split(/(?=\s+)/);
@@ -57,8 +102,7 @@ export function useChatSocket() {
       
       chunks.forEach((chunk, index) => {
         const chunkTimeout = setTimeout(() => {
-          // console.log(`[WebSocket] Received: { type: "chunk", payload: { message_id: "${messageId}", content: "${chunk}" } }`);
-          dispatch({ type: 'chunk', payload: { message_id: messageId, content: chunk } });
+          dispatchRaw({ type: 'chunk', payload: { message_id: messageId, content: chunk } });
         }, delay + (index * 100)); // fast streaming simulation
         activeTimeouts.current.push(chunkTimeout);
       });
@@ -66,10 +110,10 @@ export function useChatSocket() {
       const nextDelay = delay + (chunks.length * 100) + 200;
       
       const productsTimeout = setTimeout(() => {
-        // console.log(`[WebSocket] Received: { type: "products", payload: { items: [...] } }`);
-        dispatch({
+        dispatchRaw({
           type: 'products',
           payload: {
+            message_id: messageId,
             items: MOCK_PRODUCTS
           }
         });
@@ -77,15 +121,14 @@ export function useChatSocket() {
       activeTimeouts.current.push(productsTimeout);
       
       const endTimeout = setTimeout(() => {
-        // console.log(`[WebSocket] Received: { type: "end", payload: { message_id: "${messageId}" } }`);
-        dispatch({ type: 'end', payload: { message_id: messageId } });
+        dispatchRaw({ type: 'end', payload: { message_id: messageId } });
       }, nextDelay + 200);
       activeTimeouts.current.push(endTimeout);
 
     }, 300);
     activeTimeouts.current.push(startTimeout);
 
-  }, [connect, dispatch]);
+  }, [connect, dispatchRaw]);
 
   useEffect(() => {
     return () => disconnect();

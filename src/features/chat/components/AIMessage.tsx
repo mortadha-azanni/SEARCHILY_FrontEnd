@@ -21,13 +21,13 @@ const CitationLabel = ({ index }: { index: string }) => {
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
-      <sup className="text-mistral-orange font-normal hover:text-[#fb6424] transition-colors leading-[0] px-[1px]">
+      <sup className="text-mistral-orange font-normal hover:text-mistral-flame transition-colors leading-[0] px-[1px]">
         [{index}]
       </sup>
       
       {/* Tooltip Overlay */}
       {show && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-[280px] bg-mistral-black text-white p-4 shadow-[0_16px_40px_rgba(250,82,15,0.2)] z-[100] border-t border-mistral-orange animate-in fade-in slide-in-from-bottom-2 duration-150 rounded-none pointer-events-none">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-[280px] bg-mistral-black text-white p-4 shadow-mistral z-[100] border-t border-mistral-orange animate-in fade-in slide-in-from-bottom-2 duration-150 rounded-none pointer-events-none">
           <div className="font-normal uppercase tracking-wider mb-2 text-mistral-orange text-[12px] pb-2 border-b border-white/10 flex items-center justify-between">
             <span>Source {index}</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
@@ -40,7 +40,7 @@ const CitationLabel = ({ index }: { index: string }) => {
           <div className="opacity-80 text-[12px] leading-relaxed font-normal">{source.snippet}</div>
           
           {/* Arrow */}
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-mistral-black rotate-45 border-r border-b border-transparent shadow-[2px_2px_2px_rgba(250,82,15,0.1)]"></div>
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-mistral-black rotate-45 border-r border-b border-transparent shadow-[0_8px_30px_rgba(250,82,15,0.05)]"></div>
         </div>
       )}
     </span>
@@ -74,11 +74,11 @@ export default function AIMessage({
 
   return (
     <div className="flex justify-start mb-8">
-      <div className={`bg-cream text-mistral-black px-6 py-5 max-w-[90%] min-w-[50%] text-[14px] font-normal leading-relaxed border ${
-        status === 'error' ? 'border-red-300 shadow-[0_8px_30px_rgba(220,38,38,0.1)]' : 'border-mistral-black/10 shadow-[0_8px_30px_rgba(250,82,15,0.05)]'
-      } rounded-none relative`}>                                                 
+      <div className={`bg-cream dark:bg-[#111] text-mistral-black dark:text-warm-ivory px-6 py-5 max-w-[90%] min-w-[50%] text-[14px] font-normal leading-relaxed border ${
+        status === 'error' ? 'border-red-300 dark:border-red-800 shadow-[0_8px_30px_rgba(250,82,15,0.05)]' : 'border-mistral-black/10 dark:border-warm-ivory/10 shadow-mistral dark:shadow-none'
+      } rounded-none relative transition-colors duration-200`}>                                                 
         
-        <div className="prose prose-sm max-w-none prose-p:my-3 prose-p:leading-relaxed prose-headings:font-normal prose-headings:uppercase prose-headings:tracking-tighter prose-headings:text-mistral-black prose-a:text-mistral-orange prose-a:no-underline hover:prose-a:underline prose-li:my-1 prose-ul:my-3 prose-ol:my-3 prose-strong:font-normal prose-strong:text-mistral-black">
+        <div className="prose prose-sm max-w-none prose-p:my-3 prose-p:leading-relaxed prose-headings:font-normal prose-headings:uppercase prose-headings:tracking-[-2.05px] prose-headings:text-mistral-black dark:prose-headings:text-warm-ivory prose-a:text-mistral-orange prose-a:no-underline hover:prose-a:underline prose-li:my-1 prose-ul:my-3 prose-ol:my-3 prose-strong:font-normal prose-strong:text-mistral-black dark:prose-strong:text-warm-ivory prose-p:text-mistral-black dark:prose-p:text-warm-ivory prose-li:text-mistral-black dark:prose-li:text-warm-ivory">
           <ReactMarkdown
             components={{
               p: ({ node, children }) => <p className="font-normal">{renderWithCitations(children)}</p>,
@@ -100,7 +100,7 @@ export default function AIMessage({
               {onRetry && (
                 <button 
                   onClick={onRetry}
-                  className="px-4 py-2 border border-red-200 hover:bg-red-50 hover:border-red-300 text-red-700 text-[12px] font-normal uppercase tracking-[0.1em] transition-colors ml-4 shadow-sm active:bg-red-100 rounded-none">
+                  className="px-4 py-2 border border-red-200 hover:bg-red-50 hover:border-red-300 text-red-700 text-[12px] font-normal uppercase tracking-[0.1em] transition-colors ml-4 shadow-[0_8px_30px_rgba(250,82,15,0.05)] active:bg-red-100 rounded-none">
                   Retry Query
                 </button>
               )}

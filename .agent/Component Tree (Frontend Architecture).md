@@ -52,21 +52,18 @@ AIChatPage
 │   │   └── NewChatButton
 │   │
 │   ├── ChatSection
-│   │   ├── MessagesContainer
-│   │   │   ├── MessageList
-│   │   │   │   ├── UserMessage
-│   │   │   │   └── AIMessage (MarkdownRenderer)
-│   │   │   └── TypingIndicator
-│   │   │
-│   │   ├── ChatInput
-│   │   │   ├── TextareaInput
-│   │   │   └── SendButton
-│   │   │
-│   │   └── TutorialOverlay (first-time only)
+│   │   ├── ChatEmptyState (on start)
+│   │   ├── MessageList
+│   │   │   ├── UserMessage
+│   │   │   └── AIMessage (MarkdownRenderer)
+│   │   ├── TypingIndicator
+│   │   └── ChatInput (uses forwardRef for .focus())
+│   │       ├── TextareaInput
+│   │       └── SendButton
 │   │
 │   ├── ResultsPanel (Resizable)
 │   │   ├── ResultsHeader
-│   │   ├── ResultsList
+│   │   ├── ProductList
 │   │   │   └── ProductCard
 │   │   └── EmptyState / LoadingState
 │   │

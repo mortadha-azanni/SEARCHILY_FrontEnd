@@ -1,10 +1,3 @@
-export type Message = {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  status?: 'streaming' | 'done' | 'error';
-};
-
 export type Product = {
   id: string;
   title: string;
@@ -15,9 +8,17 @@ export type Product = {
   source: string;
 };
 
+export type Message = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  status?: 'streaming' | 'done' | 'error' | 'aborted';
+  products?: Product[];
+};
+
 export type ChatState = {
   messages: Message[];
-  products: Product[];
+  activeMessageId: string | null;
   isLoading: boolean;
   error: string | null;
   updatedAt?: number;
@@ -26,6 +27,6 @@ export type ChatState = {
 export type WsPayload = 
   | { type: 'start'; payload: { message_id: string } }
   | { type: 'chunk'; payload: { message_id: string; content: string } }
-  | { type: 'products'; payload: { items: Product[] } }
+  | { type: 'products'; payload: { message_id?: string; items: Product[] } }
   | { type: 'end'; payload: { message_id: string } }
   | { type: 'error'; payload: { message: string } };

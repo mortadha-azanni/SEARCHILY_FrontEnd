@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Message } from '../../../types';
+import { Message, Product } from '../../../types';
 
 export function useMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -24,6 +24,12 @@ export function useMessages() {
     ));
   }, []);
 
+  const setProductsInMessage = useCallback((id: string, products: Product[]) => {
+    setMessages(prev => prev.map(msg =>
+      msg.id === id ? { ...msg, products } : msg
+    ));
+  }, []);
+
   const finalizeMessage = useCallback((id: string) => {
     setMessages(prev => prev.map(msg => 
       msg.id === id ? { ...msg, status: 'done' } : msg
@@ -36,13 +42,21 @@ export function useMessages() {
     ));
   }, []);
 
+  const abortMessage = useCallback((id: string) => {
+    setMessages(prev => prev.map(msg =>
+      msg.id === id ? { ...msg, status: 'aborted' } : msg
+    ));
+  }, []);
+
   return {
     messages,
     setMessages,
     addUserMessage,
     addAssistantMessage,
     appendToMessage,
+    setProductsInMessage,
     finalizeMessage,
-    setErrorMessage
+    setErrorMessage,
+    abortMessage
   };
 }

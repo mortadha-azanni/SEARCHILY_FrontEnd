@@ -113,7 +113,8 @@ On retry:
 1. Re-send the SAME query
 2. Create NEW AI message (do NOT reuse old one)
 3. Keep failed message visible (for context)
-4. Reset:
+4. Set focus back cleanly to the ChatInput (handled via `chatInputRef.current?.focus()`).
+5. Reset:
 
    * error state
    * loading state

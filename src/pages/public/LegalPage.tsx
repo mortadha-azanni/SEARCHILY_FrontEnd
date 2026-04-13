@@ -2,14 +2,14 @@ import React from 'react';
 
 export default function LegalPage() {
   return (
-    <div className="bg-warm-ivory min-h-screen text-mistral-black py-20 px-6">
+    <div className="bg-warm-ivory dark:bg-[#111] transition-colors min-h-[100dvh] text-mistral-black dark:text-warm-ivory py-20 px-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-[clamp(3rem,6vw,82px)] font-normal leading-[0.95] tracking-display uppercase mb-12">
           LEGAL & PRIVACY
         </h1>
         
-        <div className="prose prose-mistral prose-lg max-w-none bg-white p-8 md:p-12 border border-mistral-black/10 shadow-[rgba(127,99,21,0.12)_-8px_16px_39px]">
-          <p className="text-sm font-normal uppercase tracking-widest text-mistral-black/50 mb-8 border-b border-mistral-black/10 pb-4">Last Updated: April 2026</p>
+        <div className="prose prose-mistral dark:prose-invert prose-lg max-w-none bg-white dark:bg-mistral-black transition-colors p-8 md:p-12 border border-mistral-black/10 dark:border-warm-ivory/10 shadow-mistral">
+          <p className="text-[14px] font-normal uppercase tracking-widest text-mistral-black/50 dark:text-warm-ivory/50 mb-8 border-b border-mistral-black/10 dark:border-warm-ivory/10 pb-4">Last Updated: April 2026</p>
 
           <h2 className="text-[32px] font-normal leading-[1.15] mt-10 mb-4 uppercase">1. Terms of Service</h2>
           <p>

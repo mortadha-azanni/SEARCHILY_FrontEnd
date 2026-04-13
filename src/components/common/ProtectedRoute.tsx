@@ -1,13 +1,15 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../../features/auth/context/AuthProvider';
 
-export default function ProtectedRoute({ requireAdmin = false }: { requireAdmin?: boolean }) {
-  // Minimal auth check for Phase 6
-  // Check if a token exists to protect routes.
-  const token = localStorage.getItem('searchily_auth_token');
-  const role = localStorage.getItem('searchily_user_role');
+interface ProtectedRouteProps {
+  requireAdmin?: boolean;
+}
 
-  if (!token) {
+export default function ProtectedRoute({ requireAdmin = false }: ProtectedRouteProps) {
+  const { isAuthenticated, role } = useAuth();
+
+  if (!isAuthenticated) {
     return <Navigate to="/auth" replace />;
   }
 

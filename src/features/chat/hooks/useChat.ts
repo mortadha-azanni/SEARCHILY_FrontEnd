@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useMessages } from './useMessages';
 import { useChatSocket } from './useChatSocket';
 import { useHistory } from '../../history/hooks/useHistory';
-import { Product, WsPayload } from '../../../types';
+import { WsPayload } from '../../../types';
 
 export function useChat(initialSessionId?: string) {
   const [sessionId, setSessionId] = useState(() => initialSessionId || crypto.randomUUID());
@@ -12,15 +12,17 @@ export function useChat(initialSessionId?: string) {
     setMessages,
     addUserMessage, 
     addAssistantMessage, 
-    appendToMessage, 
+    appendToMessage,
+    setProductsInMessage,
     finalizeMessage, 
-    setErrorMessage 
+    setErrorMessage,
+    abortMessage
   } = useMessages();
 
-  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastQuery, setLastQuery] = useState<string | null>(null);
+  const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
 
   const isLoadingRef = useRef(false);
   isLoadingRef.current = isLoading;
@@ -28,27 +30,38 @@ export function useChat(initialSessionId?: string) {
   const activeMessageIdRef = useRef<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { saveToHistory, loadFromHistory } = useHistory();
+  const { saveToHistory, loadFromHistory, deleteHistorySession } = useHistory();
   const { connect, disconnect, sendMessage, onMessage } = useChatSocket();
 
-  // Implement session change logic
   const loadSession = useCallback((id: string) => {
     const historicalState = loadFromHistory(id);
     if (historicalState) {
       setSessionId(id);
       setMessages(historicalState.messages || []);
-      setProducts(historicalState.products || []);
       setError(historicalState.error || null);
       setIsLoading(false);
+      // Find the last assistant message and set it active
+      const lastAssoc = historicalState.messages?.slice().reverse().find((m: any) => m.role === 'assistant');
+      setActiveMessageId(lastAssoc?.id || null);
     } else {
-      // If it doesn't exist, create a new one
       setSessionId(crypto.randomUUID());
       setMessages([]);
-      setProducts([]);
       setError(null);
       setIsLoading(false);
+      setActiveMessageId(null);
     }
-  }, [loadFromHistory, setMessages, setProducts]);
+  }, [loadFromHistory, setMessages]);
+
+  const removeSession = useCallback((id: string) => {
+    deleteHistorySession(id);
+    if (sessionId === id) {
+      setSessionId(crypto.randomUUID());
+      setMessages([]);
+      setError(null);
+      setIsLoading(false);
+      setActiveMessageId(null);
+    }
+  }, [deleteHistorySession, sessionId, setMessages]);
 
   const clearQueryTimeout = useCallback(() => {
     if (timeoutRef.current) {
@@ -71,7 +84,7 @@ export function useChat(initialSessionId?: string) {
     clearQueryTimeout();
     timeoutRef.current = setTimeout(() => {
        handleSocketError('Request timed out. Please check your connection and try again.');
-    }, 15000); // 15 seconds string stream timeout
+    }, 15000); 
   }, [clearQueryTimeout, handleSocketError]);
 
   const handleSocketMessage = useCallback((payload: WsPayload) => {
@@ -83,6 +96,7 @@ export function useChat(initialSessionId?: string) {
       case 'start':
         activeMessageIdRef.current = payload.payload.message_id;
         addAssistantMessage(payload.payload.message_id);
+        setActiveMessageId(payload.payload.message_id);
         break;
       case 'chunk':
         if (activeMessageIdRef.current === payload.payload.message_id) {
@@ -90,7 +104,11 @@ export function useChat(initialSessionId?: string) {
         }
         break;
       case 'products':
-        setProducts(payload.payload.items);
+        if (payload.payload.message_id) {
+          setProductsInMessage(payload.payload.message_id, payload.payload.items);
+        } else if (activeMessageIdRef.current) {
+          setProductsInMessage(activeMessageIdRef.current, payload.payload.items);
+        }
         break;
       case 'end':
         setIsLoading(false);
@@ -104,7 +122,7 @@ export function useChat(initialSessionId?: string) {
         handleSocketError(payload.payload.message);
         break;
     }
-  }, [addAssistantMessage, appendToMessage, setProducts, finalizeMessage, handleSocketError, resetQueryTimeout, clearQueryTimeout]);
+  }, [addAssistantMessage, appendToMessage, setProductsInMessage, finalizeMessage, handleSocketError, resetQueryTimeout, clearQueryTimeout]);
 
   useEffect(() => {
     const unsubscribe = onMessage(handleSocketMessage);
@@ -114,7 +132,6 @@ export function useChat(initialSessionId?: string) {
     };
   }, [onMessage, handleSocketMessage, clearQueryTimeout]);
 
-  // Persist history: Save continuously to prevent Ghost Sessions, debounced to prevent spam
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -127,7 +144,7 @@ export function useChat(initialSessionId?: string) {
     saveTimeoutRef.current = setTimeout(() => {
       saveToHistory(sessionId, {
         messages,
-        products,
+        activeMessageId,
         isLoading,
         error
       });
@@ -138,7 +155,7 @@ export function useChat(initialSessionId?: string) {
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [messages, products, isLoading, error, sessionId, saveToHistory]);
+  }, [messages, activeMessageId, isLoading, error, sessionId, saveToHistory]);
 
   const executeQuery = useCallback((query: string) => {
     setIsLoading(true);
@@ -160,15 +177,26 @@ export function useChat(initialSessionId?: string) {
     executeQuery(lastQuery);
   }, [lastQuery, executeQuery]);
 
+  const stopGenerating = useCallback(() => {
+    if (!isLoadingRef.current || !activeMessageIdRef.current) return;
+    setIsLoading(false);
+    clearQueryTimeout();
+    abortMessage(activeMessageIdRef.current);
+    activeMessageIdRef.current = null;
+  }, [clearQueryTimeout, abortMessage]);
+
   return {
     sessionId,
     messages,
-    products,
+    activeMessageId,
+    setActiveMessageId,
     isLoading,
     error,
     submitQuery,
     retryQuery,
+    stopGenerating,
     loadSession,
+    removeSession,
     connect,
     disconnect
   };

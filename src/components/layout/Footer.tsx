@@ -10,13 +10,13 @@ export default function Footer() {
             <div className="flex bg-gradient-to-r from-[#ffd900] via-[#ffa110] to-mistral-orange w-6 h-6"></div>
             SEARCHILY
           </Link>
-          <p className="text-white/60 text-sm max-w-sm leading-relaxed">
+          <p className="text-white/60 text-[14px] max-w-sm leading-relaxed">
             AI-powered product discovery. Find exactly what you need through natural conversation, ranked and sourced in milliseconds.
           </p>
         </div>
         <div>
           <h4 className="uppercase tracking-widest text-[10px] font-normal text-white/40 mb-4">Company</h4>
-          <ul className="space-y-3 text-sm font-normal text-white/80">
+          <ul className="space-y-3 text-[14px] font-normal text-white/80">
             <li><Link to="/about" className="hover:text-mistral-orange transition-colors">About</Link></li>
             <li><Link to="/legal" className="hover:text-mistral-orange transition-colors">Privacy Policy</Link></li>
             <li><Link to="/legal" className="hover:text-mistral-orange transition-colors">Terms of Service</Link></li>
@@ -24,7 +24,7 @@ export default function Footer() {
         </div>
         <div>
           <h4 className="uppercase tracking-widest text-[10px] font-normal text-white/40 mb-4">Product</h4>
-          <ul className="space-y-3 text-sm font-normal text-white/80">
+          <ul className="space-y-3 text-[14px] font-normal text-white/80">
             <li><Link to="/app" className="hover:text-mistral-orange transition-colors">Searchily Chat</Link></li>
             <li><Link to="/admin" className="hover:text-mistral-orange transition-colors">Console Access</Link></li>
           </ul>
