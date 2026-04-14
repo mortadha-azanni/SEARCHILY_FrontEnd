@@ -4,6 +4,7 @@ import { createBrowserRouter } from 'react-router-dom';
 // Layouts - Outer shells imported synchronously
 import PublicLayout from '../components/layout/PublicLayout';
 import AppLayout from '../components/layout/AppLayout';
+import ProfileLayout from '../components/layout/ProfileLayout';
 import AdminLayout from '../components/layout/AdminLayout';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
@@ -12,6 +13,7 @@ const LandingPage = React.lazy(() => import('../pages/public/LandingPage'));
 const AboutPage = React.lazy(() => import('../pages/public/AboutPage'));
 const LegalPage = React.lazy(() => import('../pages/public/LegalPage'));
 const AuthPage = React.lazy(() => import('../pages/public/AuthPage'));
+const NotFoundPage = React.lazy(() => import('../pages/public/NotFoundPage'));
 
 // App Pages (Lazy)
 const AIChatPage = React.lazy(() => import('../pages/app/AIChatPage'));
@@ -52,10 +54,16 @@ export const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { index: true, element: <Suspense fallback={<PageLoader />}><AIChatPage /></Suspense> },
-          { path: 'profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
-          { path: 'profile/edit', element: <Suspense fallback={<PageLoader />}><EditProfilePage /></Suspense> },
-          { path: 'profile/billing', element: <Suspense fallback={<PageLoader />}><BillingPage /></Suspense> },
-          { path: 'profile/notifications', element: <Suspense fallback={<PageLoader />}><NotificationsPage /></Suspense> },
+        ]
+      },
+      {
+        path: 'profile',
+        element: <ProfileLayout />,
+        children: [
+          { index: true, element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
+          { path: 'edit', element: <Suspense fallback={<PageLoader />}><EditProfilePage /></Suspense> },
+          { path: 'billing', element: <Suspense fallback={<PageLoader />}><BillingPage /></Suspense> },
+          { path: 'notifications', element: <Suspense fallback={<PageLoader />}><NotificationsPage /></Suspense> },
         ]
       }
     ]
@@ -74,6 +82,10 @@ export const router = createBrowserRouter([
         ]
       }
     ]
+  },
+  {
+    path: '*',
+    element: <Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>,
   },
 ], {
   basename: import.meta.env.BASE_URL

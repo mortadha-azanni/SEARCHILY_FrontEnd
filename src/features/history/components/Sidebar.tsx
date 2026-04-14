@@ -1,16 +1,19 @@
-import React, { useMemo } from 'react';
-import { useHistory } from '../hooks/useHistory';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../auth/context/AuthProvider';
+import { useHistory } from '../hooks/useHistory';
 
 interface SidebarProps {
   loadSession?: (id: string) => void;
-  currentSessionId?: string;
   removeSession?: (id: string) => void;
+  currentSessionId?: string;
+  className?: string;
 }
 
-export default function Sidebar({ loadSession, currentSessionId, removeSession, className }: SidebarProps & { className?: string }) {
+export default function Sidebar({ loadSession, removeSession, currentSessionId, className = "" }: SidebarProps) {
+  const { user } = useAuth();
   const { getGroupedHistory } = useHistory();
-  const groups = useMemo(() => getGroupedHistory(), [getGroupedHistory]);
+  const groupedHistory = getGroupedHistory();
 
   const handleNewChat = () => {
     if (loadSession) {
@@ -18,89 +21,89 @@ export default function Sidebar({ loadSession, currentSessionId, removeSession, 
     }
   };
 
-  const handleLoadSession = (id: string) => {
-    if (loadSession) {
-      loadSession(id);
-    }
-  };
-
-  const handleDeleteSession = (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (removeSession) {
-      removeSession(id);
-    }
-  };
+  if (!user) return null;
 
   return (
-    <aside className={`w-80 md:w-64 bg-cream dark:bg-mistral-black border-r border-mistral-black/10 dark:border-warm-ivory/10 flex-col h-full overflow-hidden shrink-0 ${className || 'hidden md:flex'}`}>
-      <div className="p-4 border-b border-mistral-black/10 dark:border-warm-ivory/10">
+    <aside className={`flex flex-col bg-mistral-black text-white h-full border-r border-white/5 w-64 md:w-72 shrink-0 transition-colors duration-200 ${className}`}>
+      {/* Sidebar Header */}
+      <div className="h-14 flex items-center justify-between px-4 border-b border-white/5 shrink-0">
         <button 
           onClick={handleNewChat}
-          className="w-full bg-mistral-black dark:bg-warm-ivory text-warm-ivory dark:text-mistral-black py-2 px-4 rounded-none font-normal uppercase tracking-wide hover:bg-mistral-orange dark:hover:bg-mistral-orange flex items-center justify-center transition-colors"
+          className="flex items-center gap-2 text-[12px] font-normal uppercase tracking-widest hover:text-mistral-orange transition-colors"
         >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
           New Chat
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin scrollbar-thumb-mistral-black/10 dark:scrollbar-thumb-warm-ivory/10">
-        {groups.length === 0 ? (
-          <div className="text-[14px] text-mistral-black/50 dark:text-warm-ivory/50 text-center py-4 px-2 font-normal">
-            No history available.
+      {/* History List */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        {groupedHistory.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-[12px] text-white/30 uppercase tracking-widest font-normal">No history yet</p>
           </div>
         ) : (
-          groups.map((group) => (
-            <div key={group.label} className="space-y-2">
-              <h3 className="text-[12px] font-normal text-mistral-black/40 dark:text-warm-ivory/40 uppercase tracking-wider px-2">
-                {group.label}
-              </h3>
-              <ul className="space-y-1">
-                {group.items.map(({ id, state }) => {
-                  const firstUserMessage = state.messages.find(m => m.role === 'user')?.content || 'Empty Chat';
-                  const title = firstUserMessage.length > 30 ? firstUserMessage.substring(0, 30) + '...' : firstUserMessage;
-                  const isActive = currentSessionId === id;
-
-                  return (
-                    <li key={id} className="relative group/item flex items-center">
-                      <button
-                        onClick={() => handleLoadSession(id)}
-                        className={`flex-1 text-left px-2 py-2 pr-8 rounded-none text-[14px] font-normal truncate ${
-                          isActive 
-                            ? 'bg-mistral-black/10 dark:bg-warm-ivory/10 text-mistral-black dark:text-warm-ivory border-l-2 border-mistral-orange' 
-                            : 'text-mistral-black/70 dark:text-warm-ivory/70 hover:bg-mistral-black/5 dark:hover:bg-warm-ivory/5 border-l-2 border-transparent hover:border-mistral-black/20 dark:hover:border-warm-ivory/20'
-                        }`}
-                        title={firstUserMessage}
-                      >
-                        {title}
-                      </button>
-                      <button
-                        onClick={(e) => handleDeleteSession(e, id)}
-                        className="absolute right-2 text-mistral-black/40 dark:text-warm-ivory/40 hover:text-mistral-orange dark:hover:text-mistral-orange opacity-100 md:opacity-0 group-hover/item:opacity-100 p-1 focus:opacity-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-mistral-orange bg-transparent"
-                        title="Delete Session"
-                        aria-label="Delete Session"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))
+          <div className="py-4 space-y-8">
+            {groupedHistory.map((group) => (
+              <div key={group.label} className="px-4">
+                <h3 className="text-[10px] font-normal uppercase tracking-[0.2em] text-white/30 mb-4 px-2">{group.label}</h3>
+                <div className="space-y-1">
+                  {group.items.map((item) => {
+                    const firstUserMessage = item.state.messages.find(m => m.role === 'user')?.content || 'Untitled Chat';
+                    const isActive = item.id === currentSessionId;
+                    
+                    return (
+                      <div key={item.id} className="group relative">
+                        <button
+                          onClick={() => loadSession?.(item.id)}
+                          className={`w-full text-left px-3 py-2 text-[13px] font-normal truncate transition-colors border border-transparent ${
+                            isActive 
+                              ? 'bg-white/10 text-white border-white/10' 
+                              : 'text-white/60 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {firstUserMessage}
+                        </button>
+                        {removeSession && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeSession(item.id);
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-white/30 hover:text-red-500 transition-all"
+                            aria-label="Delete session"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
-      <div className="p-4 border-t border-mistral-black/10 dark:border-warm-ivory/10 mt-auto">
-        <Link to="/app/profile" className="flex items-center gap-[12px] w-full p-2 hover:bg-mistral-black/5 dark:hover:bg-warm-ivory/5 rounded-none cursor-pointer block">
-            <div className="w-8 h-8 rounded-none bg-mistral-orange text-warm-ivory flex items-center justify-center font-normal text-[14px]">
-                U
-            </div>
-            <div className="flex-1 overflow-hidden">
-                <p className="text-[14px] font-normal text-mistral-black dark:text-warm-ivory truncate">User Settings</p>
-            </div>
+      {/* Sidebar Footer */}
+      <div className="p-4 border-t border-white/5 shrink-0">
+        <Link 
+          to="/app/profile"
+          className="flex items-center gap-3 w-full p-2 hover:bg-white/5 transition-colors group"
+        >
+          <div className="w-8 h-8 bg-mistral-orange text-white flex items-center justify-center text-[14px] font-normal uppercase shadow-mistral">
+            {user.name.charAt(0)}
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-[12px] font-normal uppercase tracking-widest text-white/80 group-hover:text-white">User Settings</p>
+          </div>
         </Link>
       </div>
     </aside>

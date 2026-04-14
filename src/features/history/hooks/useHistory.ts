@@ -98,5 +98,22 @@ export function useHistory() {
     ].filter(g => g.items.length > 0);
   }, [history]);
 
-  return { history, saveToHistory, loadFromHistory, getGroupedHistory };
+  const deleteHistorySession = useCallback((sessionId: string) => {
+    setHistory(prev => {
+      const next = { ...prev };
+      delete next[sessionId];
+      localStorage.setItem('searchily_history', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const getLatestSessionId = useCallback((): string | null => {
+    const sessions = Object.entries(history)
+      .filter(([_, state]) => state.messages && state.messages.length > 0)
+      .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
+    
+    return sessions.length > 0 ? sessions[0][0] : null;
+  }, [history]);
+
+  return { history, saveToHistory, loadFromHistory, getGroupedHistory, getLatestSessionId, deleteHistorySession };
 }

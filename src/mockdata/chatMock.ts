@@ -1,67 +1,21 @@
 import { Product } from '../types';
-
 export const mockGenerateAIResponse = (query: string): string => {
-  return `# Markdown syntax guide
+  return `Based on your request for "${query}", I've analyzed available inventory across our indexed retailers. 
 
-## Headers
+I found several high-performance options that match your criteria. The **Sony WH-1000XM4** remains a top recommendation for its industry-leading noise cancellation and balanced sound profile. 
 
-# This is a Heading h1
-## This is a Heading h2
-###### This is a Heading h6
+If you're looking for something more comfort-oriented, the **Bose QuietComfort 45** offers a lighter fit with physical buttons that many users prefer for tactile control. For those prioritizing battery life, the **Sennheiser Momentum 4** is currently leading the pack with up to 60 hours on a single charge.
 
-## Emphasis
+### Key Comparison
 
-*This text will be italic*  
-_This will also be italic_
+| Model | Primary Strength | Battery Life |
+|-------|------------------|--------------|
+| Sony XM4 | Noise Cancelling | 30 Hours |
+| Bose QC45 | Comfort | 24 Hours |
+| Sennheiser M4 | Battery Life | 60 Hours |
 
-**This text will be bold**  
-__This will also be bold__
-
-_You **can** combine them_
-
-## Lists
-
-### Unordered
-
-* Item 1
-* Item 2
-* Item 2a
-* Item 2b
-    * Item 3a
-    * Item 3b
-
-### Ordered
-
-1. Item 1
-2. Item 2
-3. Item 3
-    1. Item 3a
-    2. Item 3b
-
-## Images
-
-![This is an alt text.](https://www.svgrepo.com/show/372900/markdown.svg " ")
-
-## Links
-
-You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
-
-## Blockquotes
-
-> Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
->
->> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
-
-## Blocks of code
-
-\`\`\`
-let message = 'Hello world';
-alert(message);
-\`\`\`
-
-
-`};
-
+I've populated the results panel with direct links to these products. Which of these features is most important for your use case?`
+};
 
 export const MOCK_PRODUCTS: Product[] = [
   {

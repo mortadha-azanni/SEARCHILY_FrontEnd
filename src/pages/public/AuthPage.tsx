@@ -6,11 +6,26 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [mockMessage, setMockMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleMockLogin = (e: React.FormEvent) => {
+  const handleMockLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    login('mock_token_123', 'admin');
-    navigate('/app');
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      // Simulation of a real login process
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // For now we still accept anything, but this is where real API call would go
+      login('mock_token_123', 'admin');
+      navigate('/app');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid credentials or system error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleMockSignup = (e: React.MouseEvent) => {
@@ -28,7 +43,7 @@ export default function AuthPage() {
         </div>
 
         {mockMessage && (
-          <div className="mb-6 bg-cream dark:bg-mistral-black p-4 text-[14px] font-normal text-mistral-black dark:text-warm-ivory shadow-mistral border border-mistral-black/10 dark:border-warm-ivory/10 flex justify-between items-start transition-colors">
+          <div className="mb-6 bg-cream dark:bg-[#111] p-4 text-[14px] font-normal text-mistral-black dark:text-warm-ivory shadow-mistral border border-mistral-black/10 dark:border-warm-ivory/10 flex justify-between items-start transition-colors">
             <span>{mockMessage}</span>
             <button onClick={() => setMockMessage(null)} className="text-mistral-black/50 dark:text-warm-ivory/50 hover:text-mistral-black dark:hover:text-warm-ivory ml-4">
               ✕
@@ -36,7 +51,13 @@ export default function AuthPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-[#111111] p-8 md:p-10 border border-mistral-black/10 dark:border-warm-ivory/10 shadow-mistral dark:shadow-none rounded-none transition-colors">
+        {error && (
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 p-4 text-[14px] font-normal text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800 shadow-mistral transition-colors">
+            {error}
+          </div>
+        )}
+
+        <div className="bg-white dark:bg-[#111] p-8 md:p-10 border border-mistral-black/10 dark:border-warm-ivory/10 shadow-mistral dark:shadow-none rounded-none transition-colors">
           
           <form onSubmit={handleMockLogin} className="space-y-6">
             <div>
@@ -45,11 +66,8 @@ export default function AuthPage() {
                 type="email" 
                 placeholder="you@example.com" 
                 required
-                className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 dark:hover:border-mistral-orange/50 focus:border-mistral-orange dark:focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange invalid:[&:not(:placeholder-shown):not(:focus)]:border-mistral-orange outline-none transition-colors rounded-none font-normal peer text-mistral-black dark:text-warm-ivory placeholder-mistral-black/30 dark:placeholder-warm-ivory/30"
+                className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 dark:hover:border-mistral-orange/50 focus:border-mistral-orange dark:focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange outline-none transition-colors rounded-none font-normal peer text-mistral-black dark:text-warm-ivory placeholder-mistral-black/30 dark:placeholder-warm-ivory/30"
               />
-              <span className="mt-2 hidden text-[14px] font-normal text-mistral-orange peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
-                Please provide a valid email address
-              </span>
             </div>
             
             <div>
@@ -58,18 +76,25 @@ export default function AuthPage() {
                 type="password" 
                 placeholder="••••••••" 
                 required
-                className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 dark:hover:border-mistral-orange/50 focus:border-mistral-orange dark:focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange invalid:[&:not(:placeholder-shown):not(:focus)]:border-mistral-orange outline-none transition-colors rounded-none font-normal peer text-mistral-black dark:text-warm-ivory placeholder-mistral-black/30 dark:placeholder-warm-ivory/30"
+                className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 dark:hover:border-mistral-orange/50 focus:border-mistral-orange dark:focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange outline-none transition-colors rounded-none font-normal peer text-mistral-black dark:text-warm-ivory placeholder-mistral-black/30 dark:placeholder-warm-ivory/30"
               />
-              <span className="mt-2 hidden text-[14px] font-normal text-mistral-orange peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
-                Password is required
-              </span>
+              <div className="mt-2 text-right">
+                <button 
+                  type="button" 
+                  onClick={() => setMockMessage('Password reset flow mock: Check your email for instructions (not really).')}
+                  className="text-[12px] font-normal uppercase tracking-wider text-mistral-black/50 dark:text-warm-ivory/50 hover:text-mistral-orange transition-colors"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </div>
 
             <button 
               type="submit"
-              className="w-full p-[12px] bg-mistral-black dark:bg-warm-ivory text-white dark:text-mistral-black font-normal uppercase tracking-wider text-[14px] hover:bg-mistral-orange dark:hover:bg-mistral-orange transition-colors rounded-none"
+              disabled={isLoading}
+              className="w-full p-4 bg-mistral-black dark:bg-mistral-orange text-white dark:text-mistral-black font-normal uppercase tracking-widest text-[14px] hover:bg-mistral-orange dark:hover:bg-warm-ivory transition-colors shadow-mistral rounded-none disabled:opacity-50"
             >
-              Sign In
+              {isLoading ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
 

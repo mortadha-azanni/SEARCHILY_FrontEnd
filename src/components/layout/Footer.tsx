@@ -33,8 +33,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/10 text-xs text-white/40 flex flex-col md:flex-row justify-between items-center">
         <p>© 2026 Searchily. Architecture strictly dictated by Design Documentation.</p>
         <div className="flex gap-4 mt-4 md:mt-0 font-normal uppercase tracking-wider">
-          <a href="#" className="hover:text-mistral-orange transition-colors">Twitter</a>
-          <a href="#" className="hover:text-mistral-orange transition-colors">GitHub</a>
+          <a href="https://twitter.com/searchily" target="_blank" rel="noopener noreferrer" className="hover:text-mistral-orange transition-colors">Twitter</a>
+          <a href="https://github.com/searchily" target="_blank" rel="noopener noreferrer" className="hover:text-mistral-orange transition-colors">GitHub</a>
         </div>
       </div>
     </footer>

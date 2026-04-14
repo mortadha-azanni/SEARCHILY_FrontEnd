@@ -44,8 +44,10 @@ export default function AdminReports() {
                   <td className="p-4 text-[14px] text-mistral-black/60 dark:text-warm-ivory/60 whitespace-nowrap">{report.date}</td>
                   <td className="p-4">
                     <span 
-                      className={`inline-block px-2 py-1 text-xs font-normal uppercase tracking-wider ${
-                        report.status === 'Generated' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      className={`inline-block px-2 py-1 text-[10px] font-normal uppercase tracking-wider ${
+                        report.status === 'Generated' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+                          : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                       }`}
                     >
                       {report.status}
@@ -53,9 +55,9 @@ export default function AdminReports() {
                   </td>
                   <td className="p-4 text-right whitespace-nowrap">
                     <button 
-                      className="text-xs font-normal uppercase tracking-widest text-mistral-black/50 hover:text-mistral-orange transition-colors"
+                      className="text-[10px] font-normal uppercase tracking-widest text-mistral-black/60 dark:text-warm-ivory/60 hover:text-mistral-orange dark:hover:text-mistral-orange bg-mistral-black/5 dark:bg-warm-ivory/5 px-3 py-1.5 transition-colors"
                       disabled={report.status === 'Failed'}
-                      style={{ opacity: report.status === 'Failed' ? 0.5 : 1, cursor: report.status === 'Failed' ? 'not-allowed' : 'pointer' }}
+                      style={{ opacity: report.status === 'Failed' ? 0.3 : 1, cursor: report.status === 'Failed' ? 'not-allowed' : 'pointer' }}
                     >
                       Download CSV
                     </button>

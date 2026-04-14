@@ -1,6 +1,7 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { WsPayload } from '../../../types';
-import { mockGenerateAIResponse, MOCK_PRODUCTS } from '../../../mockdata/chatMock';
+import chatSocket from '../../../services/websocket/socket';
+import { api } from '../../../services/api/client';
 
 type Listener = (payload: WsPayload) => void;
 
@@ -46,93 +47,47 @@ export function adaptSocketPayload(rawPayload: unknown): WsPayload | null {
 }
 
 export function useChatSocket() {
-  const isConnected = useRef(false);
-  const listeners = useRef<Listener[]>([]);
-  const activeTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const connect = useCallback(() => {
-    isConnected.current = true;
+  const onMessage = useCallback((cb: Listener) => {
+    // Wrapper to adapt payload before calling callback
+    const wrappedCb = (rawPayload: unknown) => {
+      try {
+        const adapted = adaptSocketPayload(rawPayload);
+        if (adapted) cb(adapted);
+      } catch (err) {
+        console.error('[WebSocket] Adaptation failed:', err);
+      }
+    };
+    return chatSocket.onMessage(wrappedCb);
   }, []);
 
-  const clearTimeouts = useCallback(() => {
-    activeTimeouts.current.forEach(clearTimeout);
-    activeTimeouts.current = [];
-  }, []);
-
-  // Adapter receives raw payload and adapts it before updating the app React state
-  const dispatchRaw = useCallback((rawPayload: unknown) => {
+  const sendMessage = useCallback(async (query: string) => {
     try {
-      const adapted = adaptSocketPayload(rawPayload);
-      if (!adapted) return;
-      listeners.current.forEach(cb => cb(adapted));
-    } catch (e) {
-      console.error('[WebSocket] Adaptation failed:', e);
-      // Depending on severity, we could emit an error payload to listeners here:
-      // listeners.current.forEach(cb => cb({ type: 'error', payload: { message: 'Adaptation failed' } }));
+      // 1. Handshake: Get task ID from API
+      const { task_id } = await api.search(query);
+      
+      // 2. Connect WebSocket to this task
+      chatSocket.connect(task_id);
+      
+    } catch (err: any) {
+      console.error('[ChatSocket] Search handshake failed:', err);
+      // Notify listeners of the error
+      const errorPayload: WsPayload = { 
+        type: 'error', 
+        payload: { message: err.response?.data?.message || err.message || 'Failed to start search' } 
+      };
+      // We need a way to dispatch this locally. Since we don't have a direct dispatch in chatSocket,
+      // we can rely on the fact that if api.search fails, the UI will handle it via the promise catch.
+      throw err;
     }
   }, []);
 
   const disconnect = useCallback(() => {
-    isConnected.current = false;
-    clearTimeouts();
-    dispatchRaw({ type: 'error', payload: { message: 'Connection lost' } });
-  }, [clearTimeouts, dispatchRaw]);
-
-  const onMessage = useCallback((cb: Listener) => {
-    listeners.current.push(cb);
-    return () => {
-      listeners.current = listeners.current.filter(l => l !== cb);
-    };
+    chatSocket.disconnect();
   }, []);
 
-  const sendMessage = useCallback((query: string) => {
-    if (!isConnected.current) {
-      connect();
-    }
-    
-    // Exact protocol simulation as required, feeding it into raw adapter
-    const messageId = crypto.randomUUID();
-    
-    const startTimeout = setTimeout(() => {
-      dispatchRaw({ type: 'start', payload: { message_id: messageId } });
-      
-      const text = mockGenerateAIResponse(query);
-      const chunks = text.split(/(?=\s+)/);
-      let delay = 200;
-      
-      chunks.forEach((chunk, index) => {
-        const chunkTimeout = setTimeout(() => {
-          dispatchRaw({ type: 'chunk', payload: { message_id: messageId, content: chunk } });
-        }, delay + (index * 100)); // fast streaming simulation
-        activeTimeouts.current.push(chunkTimeout);
-      });
-      
-      const nextDelay = delay + (chunks.length * 100) + 200;
-      
-      const productsTimeout = setTimeout(() => {
-        dispatchRaw({
-          type: 'products',
-          payload: {
-            message_id: messageId,
-            items: MOCK_PRODUCTS
-          }
-        });
-      }, nextDelay);
-      activeTimeouts.current.push(productsTimeout);
-      
-      const endTimeout = setTimeout(() => {
-        dispatchRaw({ type: 'end', payload: { message_id: messageId } });
-      }, nextDelay + 200);
-      activeTimeouts.current.push(endTimeout);
-
-    }, 300);
-    activeTimeouts.current.push(startTimeout);
-
-  }, [connect, dispatchRaw]);
-
-  useEffect(() => {
-    return () => disconnect();
-  }, [disconnect]);
+  const connect = useCallback(() => {
+    // No-op for now, as we connect on sendMessage
+  }, []);
 
   return { connect, disconnect, sendMessage, onMessage };
 }

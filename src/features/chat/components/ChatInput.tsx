@@ -54,7 +54,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ submitQuery, is
   };
 
   return (
-    <div className="p-6 bg-gradient-to-t from-warm-ivory via-warm-ivory dark:from-mistral-black dark:via-mistral-black to-transparent mt-auto relative z-10 w-full shrink-0 transition-colors duration-200">
+    <div className="p-4 md:p-6 bg-gradient-to-t from-warm-ivory via-warm-ivory dark:from-mistral-black dark:via-mistral-black to-transparent mt-auto relative z-10 w-full shrink-0 transition-colors duration-200">
       <form 
         onSubmit={handleSubmit}
         className="max-w-2xl mx-auto relative border border-mistral-black/20 dark:border-warm-ivory/20 bg-white dark:bg-[#1a1a1a] focus-within:border-mistral-orange dark:focus-within:border-mistral-orange transition-colors shadow-mistral dark:shadow-none rounded-none"

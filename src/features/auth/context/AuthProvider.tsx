@@ -1,11 +1,21 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar?: string;
+}
 
 interface AuthContextType {
   token: string | null;
   role: string | null;
+  user: User | null;
   login: (token: string, role: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,6 +28,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRoleState] = useState<string | null>(() => {
     return localStorage.getItem('searchily_user_role');
   });
+
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(!!token);
+
+  const fetchUser = useCallback(async () => {
+    if (!token) {
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    // Mock API call
+    setTimeout(() => {
+      if (role === 'admin') {
+        setUser({
+          id: 'u1',
+          name: 'Admin User',
+          email: 'admin@searchily.ai',
+          role: 'admin'
+        });
+      } else {
+        setUser({
+          id: 'u2',
+          name: 'Mock User',
+          email: 'user@example.com',
+          role: 'user'
+        });
+      }
+      setIsLoading(false);
+    }, 500);
+  }, [token, role]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
@@ -34,23 +80,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = (newToken: string, newRole: string) => {
-    setTokenState(newToken);
-    setRoleState(newRole);
     localStorage.setItem('searchily_auth_token', newToken);
     localStorage.setItem('searchily_user_role', newRole);
+    setTokenState(newToken);
+    setRoleState(newRole);
   };
 
   const logout = () => {
-    setTokenState(null);
-    setRoleState(null);
     localStorage.removeItem('searchily_auth_token');
     localStorage.removeItem('searchily_user_role');
+    setTokenState(null);
+    setRoleState(null);
+    setUser(null);
   };
 
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ token, role, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, role, user, login, logout, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

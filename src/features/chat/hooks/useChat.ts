@@ -5,7 +5,9 @@ import { useHistory } from '../../history/hooks/useHistory';
 import { WsPayload } from '../../../types';
 
 export function useChat(initialSessionId?: string) {
+  const { saveToHistory, loadFromHistory, deleteHistorySession, getLatestSessionId } = useHistory();
   const [sessionId, setSessionId] = useState(() => initialSessionId || crypto.randomUUID());
+  const hasAttemptedResume = useRef(false);
   
   const { 
     messages, 
@@ -30,8 +32,20 @@ export function useChat(initialSessionId?: string) {
   const activeMessageIdRef = useRef<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { saveToHistory, loadFromHistory, deleteHistorySession } = useHistory();
   const { connect, disconnect, sendMessage, onMessage } = useChatSocket();
+
+  // Auto-resume latest session on mount if no initialSessionId
+  useEffect(() => {
+    if (!initialSessionId && !hasAttemptedResume.current) {
+      const latestId = getLatestSessionId();
+      // Only auto-load if history is populated (it might be async from localStorage)
+      if (latestId) {
+        // Use a small delay or check to ensure loadSession is ready
+        loadSession(latestId);
+        hasAttemptedResume.current = true;
+      }
+    }
+  }, [initialSessionId, getLatestSessionId, loadSession]);
 
   const loadSession = useCallback((id: string) => {
     const historicalState = loadFromHistory(id);
@@ -157,24 +171,32 @@ export function useChat(initialSessionId?: string) {
     };
   }, [messages, activeMessageId, isLoading, error, sessionId, saveToHistory]);
 
-  const executeQuery = useCallback((query: string) => {
+  const executeQuery = useCallback(async (query: string) => {
     setIsLoading(true);
     setError(null);
     setLastQuery(query);
     resetQueryTimeout();
-    sendMessage(query);
-  }, [sendMessage, resetQueryTimeout]);
+    try {
+      await sendMessage(query);
+    } catch (err: any) {
+      setIsLoading(false);
+      setError(err.message || 'Failed to start search');
+      if (activeMessageIdRef.current) {
+        setErrorMessage(activeMessageIdRef.current);
+      }
+    }
+  }, [sendMessage, resetQueryTimeout, setErrorMessage]);
 
-  const submitQuery = useCallback((query: string) => {
+  const submitQuery = useCallback(async (query: string) => {
     if (isLoadingRef.current) return null;
     const messageId = addUserMessage(query);
-    executeQuery(query);
+    await executeQuery(query);
     return messageId;
   }, [addUserMessage, executeQuery]);
 
-  const retryQuery = useCallback(() => {
+  const retryQuery = useCallback(async () => {
     if (isLoadingRef.current || !lastQuery) return;
-    executeQuery(lastQuery);
+    await executeQuery(lastQuery);
   }, [lastQuery, executeQuery]);
 
   const stopGenerating = useCallback(() => {

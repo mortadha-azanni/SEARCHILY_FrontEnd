@@ -1,8 +1,0 @@
-./.agent/AI Product Discovery Platform — Frontend Specification.md
-./.agent/Component Tree (Frontend Architecture).md
-./.agent/Hook System Overview.md
-./.agent/Production-Grade Error Handling & Retry System.md
-./.agent/WebSocket Response Protocol — AI Product Discovery.md
-./.agent/Frontend Folder Architecture (React + Vite).md
-./README.md
-./.backend/FRONTEND_INTEGRATION_GUIDE.md

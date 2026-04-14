@@ -6,6 +6,7 @@ import PreviewDrawer from '../../product/components/PreviewDrawer';
 import Drawer from '../../../components/common/Drawer';
 import { useChat } from '../hooks/useChat';
 import { useMobileNav } from '../../../app/providers/MobileNavProvider';
+import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { Product } from '../../../types';
 
 export default function ChatLayout() {
@@ -24,31 +25,31 @@ export default function ChatLayout() {
   } = useChat();
 
   const { sidebarOpen, resultsPanelOpen, setSidebarOpen, setResultsPanelOpen } = useMobileNav();
+  const isMobile = useMediaQuery('(max-width: 767px)');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   // Right panel resize state
   const [rightPanelWidth, setRightPanelWidth] = useState(350);
-  
-
 
   const activeMessage = messages.find(m => m.id === activeMessageId);
   const activeProducts = activeMessage?.products || [];
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-warm-ivory dark:bg-mistral-black text-mistral-black dark:text-warm-ivory relative">
-      {sidebarOpen && (
+      {/* Desktop Sidebar */}
+      {sidebarOpen && !isMobile && (
         <div className="hidden md:flex shrink-0 animate-in slide-in-from-left duration-200">
-
-        <Sidebar 
-          loadSession={loadSession} 
-          currentSessionId={sessionId}
-          removeSession={removeSession}
-        />
-      </div>
+          <Sidebar 
+            loadSession={loadSession} 
+            currentSessionId={sessionId}
+            removeSession={removeSession}
+          />
+        </div>
       )}
 
-      {sidebarOpen && window.innerWidth < 768 && (
+      {/* Mobile Sidebar Drawer */}
+      {sidebarOpen && isMobile && (
         <Drawer side="left" open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <Sidebar 
             className="flex w-full h-full"
@@ -73,8 +74,8 @@ export default function ChatLayout() {
         setActiveMessageId={setActiveMessageId}
       />
       
-      {/* Resizable Divider */}
-      {resultsPanelOpen && (
+      {/* Resizable Divider (Desktop Only) */}
+      {resultsPanelOpen && !isMobile && (
         <div 
           className="hidden md:flex w-1 hover:bg-mistral-orange cursor-col-resize shrink-0 transition-colors flex-col justify-center items-center group relative z-10"
           onMouseDown={(e) => {
@@ -83,8 +84,7 @@ export default function ChatLayout() {
             const startWidth = rightPanelWidth;
             
             const handleMouseMove = (moveEvent: MouseEvent) => {
-              const deltaX = startX - moveEvent.clientX; // Moving left increases right panel width
-              // Clamp width between 250px and 600px
+              const deltaX = startX - moveEvent.clientX;
               const newWidth = Math.max(250, Math.min(600, startWidth + deltaX));
               setRightPanelWidth(newWidth);
             };
@@ -104,7 +104,8 @@ export default function ChatLayout() {
         </div>
       )}
 
-      {resultsPanelOpen && (
+      {/* Desktop Results Panel */}
+      {resultsPanelOpen && !isMobile && (
         <div 
           className="hidden md:flex shrink-0 animate-in slide-in-from-right duration-200"
           style={{ width: rightPanelWidth }}
@@ -117,21 +118,22 @@ export default function ChatLayout() {
         </div>
       )}
 
-      {resultsPanelOpen && window.innerWidth < 768 && (
+      {/* Mobile Results Drawer */}
+      {resultsPanelOpen && isMobile && (
         <Drawer side="right" open={resultsPanelOpen} onClose={() => setResultsPanelOpen(false)}>
           <ResultsPanel 
             className="flex w-full h-full"
             products={activeProducts} 
             onProductSelect={(p) => {
               setSelectedProduct(p);
-              setResultsPanelOpen(false); // Can auto-close or keep open, currently Preview Drawer would open on top
+              setResultsPanelOpen(false);
             }} 
             isSearching={isLoading && activeMessageId === messages[messages.length - 1]?.id} 
           />
         </Drawer>
       )}
 
-      {/* Drawer as a Side-Sheet on Desktop/Mobile */}
+      {/* Side-Sheet Preview Drawer */}
       {selectedProduct && (
         <PreviewDrawer product={selectedProduct} onClose={() => setSelectedProduct(null)} />
       )}

@@ -25,15 +25,22 @@ export default function ProductCard({
       <div className="flex items-start gap-4">
         {/* Strict sharp container for images */}
         <div className="w-20 h-20 bg-mistral-black/5 dark:bg-warm-ivory/5 flex-shrink-0 flex items-center justify-center text-[10px] tracking-widest text-mistral-black/40 dark:text-warm-ivory/40 uppercase overflow-hidden border border-mistral-black/5 group-hover:border-mistral-orange/20 transition-colors">
-          {image && image !== 'No IMG' ? (
+          {image && image !== 'No IMG' && !image.includes('placeholder.com') ? (
             <img src={image} alt={title || 'Product'} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-300" />
           ) : (
-            "No IMG"
+            <div className="flex flex-col items-center gap-1 opacity-40">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" strokeLinejoin="miter">
+                <rect x="3" y="3" width="18" height="18" rx="0" ry="0"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <span className="text-[8px] font-normal uppercase tracking-widest">No Image</span>
+            </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
-            <h3 className="font-normal text-[18px] leading-[1.15] line-clamp-1 text-mistral-black dark:text-warm-ivory tracking-[-2.05px] group-hover:text-mistral-orange transition-colors">
+            <h3 className="font-normal text-[18px] leading-[1.15] line-clamp-1 text-mistral-black dark:text-warm-ivory group-hover:text-mistral-orange transition-colors">
               {title || 'Product Title'}
             </h3>
             {source && (
