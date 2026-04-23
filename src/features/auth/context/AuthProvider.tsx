@@ -49,13 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: 'admin@searchily.ai',
           role: 'admin'
         });
-      } else if (role === 'vendor') {
-        setUser({
-          id: 'v1',
-          name: 'Acme Test Vendor',
-          email: 'vendor@acme.com',
-          role: 'vendor'
-        });
       } else {
         setUser({
           id: 'u2',

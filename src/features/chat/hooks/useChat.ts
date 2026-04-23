@@ -34,6 +34,19 @@ export function useChat(initialSessionId?: string) {
 
   const { connect, disconnect, sendMessage, onMessage } = useChatSocket();
 
+  // Auto-resume latest session on mount if no initialSessionId
+  useEffect(() => {
+    if (!initialSessionId && !hasAttemptedResume.current) {
+      const latestId = getLatestSessionId();
+      // Only auto-load if history is populated (it might be async from localStorage)
+      if (latestId) {
+        // Use a small delay or check to ensure loadSession is ready
+        loadSession(latestId);
+        hasAttemptedResume.current = true;
+      }
+    }
+  }, [initialSessionId, getLatestSessionId, loadSession]);
+
   const loadSession = useCallback((id: string) => {
     const historicalState = loadFromHistory(id);
     if (historicalState) {
@@ -52,17 +65,6 @@ export function useChat(initialSessionId?: string) {
       setActiveMessageId(null);
     }
   }, [loadFromHistory, setMessages]);
-
-  // Auto-resume latest session on mount if no initialSessionId
-  useEffect(() => {
-    if (!initialSessionId && !hasAttemptedResume.current) {
-      const latestId = getLatestSessionId();
-      if (latestId) {
-        loadSession(latestId);
-        hasAttemptedResume.current = true;
-      }
-    }
-  }, [initialSessionId, getLatestSessionId, loadSession]);
 
   const removeSession = useCallback((id: string) => {
     deleteHistorySession(id);

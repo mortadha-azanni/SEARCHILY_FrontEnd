@@ -14,7 +14,6 @@ const AboutPage = React.lazy(() => import('../pages/public/AboutPage'));
 const LegalPage = React.lazy(() => import('../pages/public/LegalPage'));
 const AuthPage = React.lazy(() => import('../pages/public/AuthPage'));
 const NotFoundPage = React.lazy(() => import('../pages/public/NotFoundPage'));
-const BusinessAccountPage = React.lazy(() => import('../pages/public/BusinessAccountPage'));
 
 // App Pages (Lazy)
 const AIChatPage = React.lazy(() => import('../pages/app/AIChatPage'));
@@ -27,13 +26,6 @@ const NotificationsPage = React.lazy(() => import('../pages/app/NotificationsPag
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'));
 const AdminReports = React.lazy(() => import('../pages/admin/AdminReports'));
 const AdminETLPanel = React.lazy(() => import('../pages/admin/AdminETLPanel'));
-
-// Vendor Pages (Lazy)
-const VendorDashboard = React.lazy(() => import('../pages/vendor/VendorDashboard'));
-const VendorProducts = React.lazy(() => import('../pages/vendor/VendorProducts'));
-const VendorOrders = React.lazy(() => import('../pages/vendor/VendorOrders'));
-const VendorSettings = React.lazy(() => import('../pages/vendor/VendorSettings'));
-import VendorLayout from '../components/layout/VendorLayout';
 
 // Fallback loader for lazy chunks
 const PageLoader = () => (
@@ -51,7 +43,6 @@ export const router = createBrowserRouter([
       { path: 'about', element: <Suspense fallback={<PageLoader />}><AboutPage /></Suspense> },
       { path: 'legal', element: <Suspense fallback={<PageLoader />}><LegalPage /></Suspense> },
       { path: 'auth', element: <Suspense fallback={<PageLoader />}><AuthPage /></Suspense> },
-      { path: 'business-account', element: <Suspense fallback={<PageLoader />}><BusinessAccountPage /></Suspense> },
     ],
   },
   {
@@ -88,22 +79,6 @@ export const router = createBrowserRouter([
           { index: true, element: <Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense> },
           { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
           { path: 'etl', element: <Suspense fallback={<PageLoader />}><AdminETLPanel /></Suspense> },
-        ]
-      }
-    ]
-  },
-  {
-    path: '/vendor',
-    element: <ProtectedRoute allowedRoles={['vendor']} />,
-    children: [
-      {
-        path: '',
-        element: <VendorLayout />,
-        children: [
-          { index: true, element: <Suspense fallback={<PageLoader />}><VendorDashboard /></Suspense> },
-          { path: 'products', element: <Suspense fallback={<PageLoader />}><VendorProducts /></Suspense> },
-          { path: 'orders', element: <Suspense fallback={<PageLoader />}><VendorOrders /></Suspense> },
-          { path: 'settings', element: <Suspense fallback={<PageLoader />}><VendorSettings /></Suspense> },
         ]
       }
     ]

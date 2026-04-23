@@ -5,7 +5,6 @@ import { useAuth } from '../../features/auth/context/AuthProvider';
 export default function AuthPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
   const [mockMessage, setMockMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,9 +18,9 @@ export default function AuthPage() {
       // Simulation of a real login process
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      const role = email.toLowerCase().includes('vendor') ? 'vendor' : 'admin';
-      login('mock_token_123', role);
-      navigate(role === 'vendor' ? '/vendor' : '/app');
+      // For now we still accept anything, but this is where real API call would go
+      login('mock_token_123', 'admin');
+      navigate('/app');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid credentials or system error. Please try again.');
     } finally {
@@ -67,8 +66,6 @@ export default function AuthPage() {
                 type="email" 
                 placeholder="you@example.com" 
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 dark:hover:border-mistral-orange/50 focus:border-mistral-orange dark:focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange outline-none transition-colors rounded-none font-normal peer text-mistral-black dark:text-warm-ivory placeholder-mistral-black/30 dark:placeholder-warm-ivory/30"
               />
             </div>
@@ -99,25 +96,6 @@ export default function AuthPage() {
             >
               {isLoading ? 'Authenticating...' : 'Sign In'}
             </button>
-
-            {/* Business Account Link */}
-            <div className="mt-5 flex items-center gap-3">
-              <div className="flex-1 h-px bg-mistral-black/10 dark:bg-warm-ivory/10"></div>
-              <span className="text-[11px] font-normal uppercase tracking-[0.2em] text-mistral-black/30 dark:text-warm-ivory/30">or</span>
-              <div className="flex-1 h-px bg-mistral-black/10 dark:bg-warm-ivory/10"></div>
-            </div>
-
-            <Link
-              to="/business-account"
-              className="mt-5 w-full p-4 bg-transparent text-mistral-black dark:text-warm-ivory font-normal uppercase tracking-widest text-[13px] border border-mistral-orange/40 hover:border-mistral-orange hover:bg-mistral-orange/5 dark:hover:bg-mistral-orange/10 transition-colors text-center inline-block group"
-            >
-              <span className="flex items-center justify-center gap-2">
-                Apply for a Business Account
-                <svg className="w-4 h-4 text-mistral-orange group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </span>
-            </Link>
           </form>
 
           <div className="mt-8 pt-8 border-t border-mistral-black/10 dark:border-warm-ivory/10 text-center transition-colors">
@@ -137,3 +115,4 @@ export default function AuthPage() {
     </div>
   );
 }
+ vc|

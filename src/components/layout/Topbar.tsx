@@ -131,15 +131,6 @@ export default function Topbar() {
                     Admin Dashboard
                   </Link>
                 )}
-                {role === 'vendor' && (
-                  <Link 
-                    to="/vendor" 
-                    onClick={() => setMenuOpen(false)}
-                    className="flex w-full px-4 py-2 text-[12px] text-mistral-black/70 dark:text-warm-ivory/70 hover:text-mistral-orange hover:bg-mistral-orange/5 transition-colors font-normal uppercase tracking-widest"
-                  >
-                    Vendor Dashboard
-                  </Link>
-                )}
                 <button 
                   onClick={handleLogout}
                   className="flex w-full text-left px-4 py-2 text-[12px] text-red-600 dark:text-mistral-orange hover:bg-red-50 dark:hover:bg-mistral-orange/10 transition-colors font-normal mt-2 border-t border-mistral-black/10 dark:border-warm-ivory/10 pt-2 uppercase tracking-widest"

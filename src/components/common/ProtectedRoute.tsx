@@ -4,10 +4,9 @@ import { useAuth } from '../../features/auth/context/AuthProvider';
 
 interface ProtectedRouteProps {
   requireAdmin?: boolean;
-  allowedRoles?: string[];
 }
 
-export default function ProtectedRoute({ requireAdmin = false, allowedRoles }: ProtectedRouteProps) {
+export default function ProtectedRoute({ requireAdmin = false }: ProtectedRouteProps) {
   const { isAuthenticated, role } = useAuth();
 
   if (!isAuthenticated) {
@@ -15,10 +14,6 @@ export default function ProtectedRoute({ requireAdmin = false, allowedRoles }: P
   }
 
   if (requireAdmin && role !== 'admin') {
-    return <Navigate to="/app" replace />;
-  }
-
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
     return <Navigate to="/app" replace />;
   }
 

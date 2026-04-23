@@ -3,7 +3,7 @@ import typography from '@tailwindcss/typography';
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
-  content: [
+        content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
@@ -16,6 +16,7 @@ export default {
         mistral: 'rgba(127, 99, 21, 0.12) -8px 16px 39px, rgba(127, 99, 21, 0.1) -33px 64px 72px, rgba(127, 99, 21, 0.06) -73px 144px 97px, rgba(127, 99, 21, 0.02) -129px 255px 115px, rgba(127, 99, 21, 0) -202px 399px 127px',
       },
       colors: {
+        accent: 'hsl(17, 96%, 52%)',
         mistral: {
           orange: '#fa520f',
           flame: '#fb6424',
@@ -38,6 +39,15 @@ export default {
       },
       letterSpacing: {
         'display': '-2.05px',
+      },
+      animation: {
+        typing: 'typing 1.5s ease-in-out infinite',
+      },
+      keyframes: {
+        typing: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.4' },
+          '50%': { transform: 'scale(1)', opacity: '1' },
+        },
       },
       typography: (theme) => ({
         mistral: {
@@ -67,3 +77,4 @@ export default {
     typography,
   ],
 }
+
