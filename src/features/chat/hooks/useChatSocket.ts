@@ -165,7 +165,7 @@ export function useChatSocket() {
       // 2. Connect WebSocket to this task
       chatSocket.connect(task_id);
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[ChatSocket] Search handshake failed:', err);
       throw err;
     }

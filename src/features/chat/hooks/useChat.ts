@@ -2,8 +2,15 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useMessages } from './useMessages';
 import { useChatSocket } from './useChatSocket';
 import { useHistory } from '../../history/hooks/useHistory';
-import { WsPayload } from '../../../types';
-import chatSocket from '../../../services/websocket/socket';
+import { Message, WsPayload } from '../../../types';
+
+const getErrorMessage = (err: unknown, fallback: string) => {
+  if (err && typeof err === 'object') {
+    const maybeError = err as { message?: string; response?: { data?: { message?: string } } };
+    return maybeError.response?.data?.message ?? maybeError.message ?? fallback;
+  }
+  return fallback;
+};
 
 export function useChat(initialSessionId?: string) {
   const { saveToHistory, loadFromHistory, deleteHistorySession, getLatestSessionId } = useHistory();
@@ -28,10 +35,13 @@ export function useChat(initialSessionId?: string) {
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
 
   const isLoadingRef = useRef(false);
-  isLoadingRef.current = isLoading;
   
   const activeMessageIdRef = useRef<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
 
   const { connect, disconnect, sendMessage, onMessage } = useChatSocket();
 
@@ -43,7 +53,7 @@ export function useChat(initialSessionId?: string) {
       setError(historicalState.error || null);
       setIsLoading(false);
       // Find the last assistant message and set it active
-      const lastAssoc = historicalState.messages?.slice().reverse().find((m: any) => m.role === 'assistant');
+      const lastAssoc = historicalState.messages?.slice().reverse().find((m: Message) => m.role === 'assistant');
       setActiveMessageId(lastAssoc?.id || null);
     } else {
       setSessionId(crypto.randomUUID());
@@ -188,9 +198,9 @@ export function useChat(initialSessionId?: string) {
     resetQueryTimeout();
     try {
       await sendMessage(query);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsLoading(false);
-      setError(err.message || 'Failed to start search');
+      setError(getErrorMessage(err, 'Failed to start search'));
       if (activeMessageIdRef.current) {
         setErrorMessage(activeMessageIdRef.current);
       }

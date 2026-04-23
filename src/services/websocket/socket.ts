@@ -1,7 +1,4 @@
-import { WsPayload } from '../../types';
-
-type Listener = (payload: WsPayload) => void;
-type HeartbeatListener = () => void;
+type Listener = (payload: unknown) => void;
 
 class ChatSocket {
   private socket: WebSocket | null = null;
@@ -95,10 +92,7 @@ class ChatSocket {
     return () => this.heartbeatListeners.delete(callback);
   }
 
-  private notify(payload: any) {
-    // First emit heartbeat for any message (including status)
-    this.notifyHeartbeat();
-    // Then notify regular listeners
+  private notify(payload: unknown) {
     this.listeners.forEach(listener => listener(payload));
   }
 

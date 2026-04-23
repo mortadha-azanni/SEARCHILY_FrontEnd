@@ -5,7 +5,7 @@ export default function ProductCard({
   price, 
   description, 
   image, 
-  url, 
+  url: _url, 
   source,
   onClick
 }: { 

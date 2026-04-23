@@ -55,12 +55,13 @@ export default function ChatSection({
     (messages[messages.length - 1]?.role === 'assistant' && (messages[messages.length - 1]?.status === 'error' || messages[messages.length - 1]?.status === 'streaming'))
   );
 
-  const isFinalAssistantError = (msg: Message, idx: number, arr: Message[]) => 
-    msg.role === 'assistant' && msg.status === 'error' && isLoading && idx === arr.length - 1;
-
-  const displayMessages = useMemo(() => 
-    messages.filter((msg, idx, arr) => !isFinalAssistantError(msg, idx, arr)), 
-  [messages, isLoading]);
+  const displayMessages = useMemo(() => {
+    return messages.filter((msg, idx, arr) => {
+      const isFinalAssistantError =
+        msg.role === 'assistant' && msg.status === 'error' && isLoading && idx === arr.length - 1;
+      return !isFinalAssistantError;
+    });
+  }, [messages, isLoading]);
 
   return (
     <div className="flex-1 flex flex-col h-full bg-warm-ivory dark:bg-mistral-black relative border-r border-l border-mistral-black/10 dark:border-warm-ivory/20 transition-colors duration-200">

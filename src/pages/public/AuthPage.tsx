@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthProvider';
-import { api } from '../../services/api/client';
+
+const getErrorMessage = (err: unknown, fallback: string) => {
+  if (err && typeof err === 'object') {
+    const maybeError = err as { message?: string; response?: { data?: { message?: string } } };
+    return maybeError.response?.data?.message ?? maybeError.message ?? fallback;
+  }
+  return fallback;
+};
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -27,8 +34,8 @@ export default function AuthPage() {
       login(response.token, response.role);
       
       navigate('/app');
-    } catch (err: any) {
-      setError(err.response?.data?.detail || err.response?.data?.message || 'Invalid credentials or system error. Please try again.');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Invalid credentials or system error. Please try again.'));
     } finally {
       setIsLoading(false);
     }
