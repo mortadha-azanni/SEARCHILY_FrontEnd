@@ -14,6 +14,7 @@ const LandingPage = React.lazy(() => import('../pages/public/LandingPage'));
 const AboutPage = React.lazy(() => import('../pages/public/AboutPage'));
 const LegalPage = React.lazy(() => import('../pages/public/LegalPage'));
 const AuthPage = React.lazy(() => import('../pages/public/AuthPage'));
+const BusinessAccountPage = React.lazy(() => import('../pages/public/BusinessAccountPage'));
 const NotFoundPage = React.lazy(() => import('../pages/public/NotFoundPage'));
 
 // App Pages (Lazy)
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
       { path: 'about', element: <Suspense fallback={<PageLoader />}><AboutPage /></Suspense> },
       { path: 'legal', element: <Suspense fallback={<PageLoader />}><LegalPage /></Suspense> },
       { path: 'auth', element: <Suspense fallback={<PageLoader />}><AuthPage /></Suspense> },
+      { path: 'business-account', element: <Suspense fallback={<PageLoader />}><BusinessAccountPage /></Suspense> },
     ],
   },
   {
