@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const isDevelopment = import.meta.env.MODE === 'development';
+const API_BASE_URL = isDevelopment ? '/api' : (import.meta.env.VITE_API_URL || 'http://localhost:8000');
 
 const client = axios.create({
   baseURL: API_BASE_URL,
@@ -33,13 +34,13 @@ client.interceptors.response.use(
 );
 
 export const api = {
-  search: async (query: string) => {
-    const response = await client.post<{ task_id: string }>('/search', { query });
+  login: async (credentials: any) => {
+    const response = await client.post('/auth/login', credentials);
     return response.data;
   },
-  
-  getTaskStatus: async (taskId: string) => {
-    const response = await client.get(`/search/status/${taskId}`);
+
+  search: async (query: string) => {
+    const response = await client.post<{ task_id: string }>('/search', { query });
     return response.data;
   },
 

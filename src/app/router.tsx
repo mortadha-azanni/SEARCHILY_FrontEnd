@@ -8,6 +8,9 @@ import ProfileLayout from '../components/layout/ProfileLayout';
 import AdminLayout from '../components/layout/AdminLayout';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
+import AuthCallback from '../pages/public/AuthCallback';
+
+
 // Public Pages (Lazy)
 const LandingPage = React.lazy(() => import('../pages/public/LandingPage'));
 const AboutPage = React.lazy(() => import('../pages/public/AboutPage'));
@@ -43,6 +46,7 @@ export const router = createBrowserRouter([
       { path: 'about', element: <Suspense fallback={<PageLoader />}><AboutPage /></Suspense> },
       { path: 'legal', element: <Suspense fallback={<PageLoader />}><LegalPage /></Suspense> },
       { path: 'auth', element: <Suspense fallback={<PageLoader />}><AuthPage /></Suspense> },
+      { path: 'auth/callback', element: <Suspense fallback={<PageLoader />}><AuthCallback /></Suspense> },
     ],
   },
   {

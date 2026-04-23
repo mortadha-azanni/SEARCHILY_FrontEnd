@@ -8,5 +8,14 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     base: env.BASE_URL || '/SEARCHILY_FrontEnd/',
+    server: {
+      proxy: {
+        '/api': {
+          target: env.VITE_API_URL || 'http://localhost:8000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
   }
 })

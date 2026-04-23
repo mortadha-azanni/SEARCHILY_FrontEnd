@@ -3,6 +3,7 @@ import { useMessages } from './useMessages';
 import { useChatSocket } from './useChatSocket';
 import { useHistory } from '../../history/hooks/useHistory';
 import { WsPayload } from '../../../types';
+import chatSocket from '../../../services/websocket/socket';
 
 export function useChat(initialSessionId?: string) {
   const { saveToHistory, loadFromHistory, deleteHistorySession, getLatestSessionId } = useHistory();
@@ -34,19 +35,6 @@ export function useChat(initialSessionId?: string) {
 
   const { connect, disconnect, sendMessage, onMessage } = useChatSocket();
 
-  // Auto-resume latest session on mount if no initialSessionId
-  useEffect(() => {
-    if (!initialSessionId && !hasAttemptedResume.current) {
-      const latestId = getLatestSessionId();
-      // Only auto-load if history is populated (it might be async from localStorage)
-      if (latestId) {
-        // Use a small delay or check to ensure loadSession is ready
-        loadSession(latestId);
-        hasAttemptedResume.current = true;
-      }
-    }
-  }, [initialSessionId, getLatestSessionId, loadSession]);
-
   const loadSession = useCallback((id: string) => {
     const historicalState = loadFromHistory(id);
     if (historicalState) {
@@ -65,6 +53,19 @@ export function useChat(initialSessionId?: string) {
       setActiveMessageId(null);
     }
   }, [loadFromHistory, setMessages]);
+
+  // Auto-resume latest session on mount if no initialSessionId
+  useEffect(() => {
+    if (!initialSessionId && !hasAttemptedResume.current) {
+      const latestId = getLatestSessionId();
+      // Only auto-load if history is populated (it might be async from localStorage)
+      if (latestId) {
+        // Use a small delay or check to ensure loadSession is ready
+        loadSession(latestId);
+        hasAttemptedResume.current = true;
+      }
+    }
+  }, [initialSessionId, getLatestSessionId, loadSession]);
 
   const removeSession = useCallback((id: string) => {
     deleteHistorySession(id);
@@ -140,11 +141,20 @@ export function useChat(initialSessionId?: string) {
 
   useEffect(() => {
     const unsubscribe = onMessage(handleSocketMessage);
+    // Also set up heartbeat listener to keep timeout alive while backend processes
+    // (e.g., status messages keep the connection active)
+    const unsubscribeHeartbeat = chatSocket.onHeartbeat(() => {
+      if (isLoadingRef.current) {
+        console.log('[WebSocket Heartbeat] Keeping timeout alive');
+        resetQueryTimeout();
+      }
+    });
     return () => {
       unsubscribe();
+      unsubscribeHeartbeat();
       clearQueryTimeout();
     };
-  }, [onMessage, handleSocketMessage, clearQueryTimeout]);
+  }, [onMessage, handleSocketMessage, clearQueryTimeout, resetQueryTimeout]);
 
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

@@ -52,7 +52,7 @@ export default function ChatSection({
   const isAwaitingResponse = isLoading && (
     !messages.length || 
     messages[messages.length - 1]?.role === 'user' || 
-    (messages[messages.length - 1]?.role === 'assistant' && messages[messages.length - 1]?.status === 'error')
+    (messages[messages.length - 1]?.role === 'assistant' && (messages[messages.length - 1]?.status === 'error' || messages[messages.length - 1]?.status === 'streaming'))
   );
 
   const isFinalAssistantError = (msg: Message, idx: number, arr: Message[]) => 
