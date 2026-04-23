@@ -15,13 +15,10 @@ export function useHistory() {
     const stored = localStorage.getItem('searchily_history');
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        
-        const migrated = Object.entries(parsed).reduce((acc, [id, state]: [string, any], index) => {
-          if (!state.updatedAt) {
-             state.updatedAt = Date.now() - (index * 100000); 
-          }
-          acc[id] = state as ChatState;
+        const parsed = JSON.parse(stored) as Record<string, ChatState>;
+        const migrated = Object.entries(parsed).reduce((acc, [id, state], index) => {
+          const updatedAt = state.updatedAt ?? Date.now() - (index * 100000);
+          acc[id] = { ...state, updatedAt };
           return acc;
         }, {} as Record<string, ChatState>);
 
@@ -71,7 +68,7 @@ export function useHistory() {
     
     // Sort array descending to get correct recency
     const sorted = Object.entries(history)
-      .filter(([id, state]) => state.messages && state.messages.length > 0)
+      .filter(([, state]) => state.messages && state.messages.length > 0)
       .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
 
     const grouped: Record<string, { id: string; state: ChatState }[]> = {
@@ -109,7 +106,7 @@ export function useHistory() {
 
   const getLatestSessionId = useCallback((): string | null => {
     const sessions = Object.entries(history)
-      .filter(([_, state]) => state.messages && state.messages.length > 0)
+      .filter(([, state]) => state.messages && state.messages.length > 0)
       .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
     
     return sessions.length > 0 ? sessions[0][0] : null;

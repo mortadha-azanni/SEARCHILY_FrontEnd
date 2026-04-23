@@ -53,7 +53,7 @@ export default function AIMessage({
   onRetry 
 }: { 
   content?: string, 
-  status?: 'streaming' | 'done' | 'error',
+  status?: 'streaming' | 'done' | 'error' | 'aborted',
   onRetry?: () => void
 }) {                                           
   
@@ -81,9 +81,9 @@ export default function AIMessage({
         <div className="prose prose-sm max-w-none prose-p:my-3 prose-p:leading-relaxed prose-headings:font-normal prose-headings:uppercase prose-headings:tracking-[-2.05px] prose-headings:text-mistral-black dark:prose-headings:text-warm-ivory prose-a:text-mistral-orange prose-a:no-underline hover:prose-a:underline prose-li:my-1 prose-ul:my-3 prose-ol:my-3 prose-strong:font-normal prose-strong:text-mistral-black dark:prose-strong:text-warm-ivory prose-p:text-mistral-black dark:prose-p:text-warm-ivory prose-li:text-mistral-black dark:prose-li:text-warm-ivory">
           <ReactMarkdown
             components={{
-              p: ({ node, children }) => <p className="font-normal">{renderWithCitations(children)}</p>,
-              li: ({ node, children }) => <li className="font-normal">{renderWithCitations(children)}</li>,
-              strong: ({ node, children }) => <strong className="font-normal text-[15px] tracking-tight">{children}</strong>
+              p: ({ children }) => <p className="font-normal">{renderWithCitations(children)}</p>,
+              li: ({ children }) => <li className="font-normal">{renderWithCitations(children)}</li>,
+              strong: ({ children }) => <strong className="font-normal text-[15px] tracking-tight">{children}</strong>
             }}
           >
             {content || ''}

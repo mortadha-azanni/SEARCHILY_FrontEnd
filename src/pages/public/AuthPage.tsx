@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthProvider';
 
+const getErrorMessage = (err: unknown, fallback: string) => {
+  if (err && typeof err === 'object') {
+    const maybeError = err as { message?: string; response?: { data?: { message?: string } } };
+    return maybeError.response?.data?.message ?? maybeError.message ?? fallback;
+  }
+  return fallback;
+};
+
 export default function AuthPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -21,8 +29,8 @@ export default function AuthPage() {
       // For now we still accept anything, but this is where real API call would go
       login('mock_token_123', 'admin');
       navigate('/app');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid credentials or system error. Please try again.');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Invalid credentials or system error. Please try again.'));
     } finally {
       setIsLoading(false);
     }
@@ -115,4 +123,3 @@ export default function AuthPage() {
     </div>
   );
 }
- vc|

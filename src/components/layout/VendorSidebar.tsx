@@ -37,7 +37,7 @@ export default function VendorSidebar() {
 
       <div className="p-4 border-t border-white/10 shrink-0">
         <NavLink 
-          to="/"
+          to="/app"
           className="block w-full text-center px-4 py-3 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-normal uppercase tracking-wider transition-colors rounded-none"
         >
           &larr; Back to App

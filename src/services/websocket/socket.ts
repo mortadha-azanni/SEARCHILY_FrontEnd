@@ -1,6 +1,4 @@
-import { WsPayload } from '../../types';
-
-type Listener = (payload: WsPayload) => void;
+type Listener = (payload: unknown) => void;
 
 class ChatSocket {
   private socket: WebSocket | null = null;
@@ -62,7 +60,7 @@ class ChatSocket {
     return () => this.listeners.delete(callback);
   }
 
-  private notify(payload: any) {
+  private notify(payload: unknown) {
     this.listeners.forEach(listener => listener(payload));
   }
 

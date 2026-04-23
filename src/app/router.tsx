@@ -6,6 +6,7 @@ import PublicLayout from '../components/layout/PublicLayout';
 import AppLayout from '../components/layout/AppLayout';
 import ProfileLayout from '../components/layout/ProfileLayout';
 import AdminLayout from '../components/layout/AdminLayout';
+import VendorLayout from '../components/layout/VendorLayout';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
 // Public Pages (Lazy)
@@ -26,6 +27,12 @@ const NotificationsPage = React.lazy(() => import('../pages/app/NotificationsPag
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'));
 const AdminReports = React.lazy(() => import('../pages/admin/AdminReports'));
 const AdminETLPanel = React.lazy(() => import('../pages/admin/AdminETLPanel'));
+
+// Vendor Pages (Lazy)
+const VendorDashboard = React.lazy(() => import('../pages/vendor/VendorDashboard'));
+const VendorProducts = React.lazy(() => import('../pages/vendor/VendorProducts'));
+const VendorOrders = React.lazy(() => import('../pages/vendor/VendorOrders'));
+const VendorSettings = React.lazy(() => import('../pages/vendor/VendorSettings'));
 
 // Fallback loader for lazy chunks
 const PageLoader = () => (
@@ -79,6 +86,22 @@ export const router = createBrowserRouter([
           { index: true, element: <Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense> },
           { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
           { path: 'etl', element: <Suspense fallback={<PageLoader />}><AdminETLPanel /></Suspense> },
+        ]
+      }
+    ]
+  },
+  {
+    path: '/vendor',
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '',
+        element: <VendorLayout />,
+        children: [
+          { index: true, element: <Suspense fallback={<PageLoader />}><VendorDashboard /></Suspense> },
+          { path: 'products', element: <Suspense fallback={<PageLoader />}><VendorProducts /></Suspense> },
+          { path: 'orders', element: <Suspense fallback={<PageLoader />}><VendorOrders /></Suspense> },
+          { path: 'settings', element: <Suspense fallback={<PageLoader />}><VendorSettings /></Suspense> },
         ]
       }
     ]
