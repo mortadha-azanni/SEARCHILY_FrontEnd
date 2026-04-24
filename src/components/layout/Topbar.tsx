@@ -55,7 +55,6 @@ export default function Topbar() {
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-[14px]">
           <Link to="/app" className="text-mistral-black/70 dark:text-warm-ivory/70 hover:text-mistral-black dark:hover:text-warm-ivory transition-colors font-normal uppercase tracking-widest">Chat</Link>
-          <button className="text-mistral-black/30 dark:text-warm-ivory/30 cursor-not-allowed font-normal uppercase tracking-widest">Workspaces (Soon)</button>
         </nav>
       </div>
 
@@ -101,10 +100,10 @@ export default function Topbar() {
 
         <button 
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center gap-2 group ml-2"
+          className="flex items-center gap-2 group ml-2 px-2.5 py-1.5 border border-mistral-black/10 dark:border-warm-ivory/15 bg-cream/60 dark:bg-warm-ivory/5 hover:bg-cream dark:hover:bg-warm-ivory/10 transition-colors"
           aria-expanded={menuOpen}
         >
-          <div className="w-8 h-8 bg-mistral-black dark:bg-warm-ivory text-warm-ivory dark:text-mistral-black flex items-center justify-center text-[14px] uppercase border border-transparent group-hover:border-mistral-orange transition-colors shadow-mistral dark:shadow-none">
+          <div className="w-9 h-9 bg-mistral-black dark:bg-warm-ivory text-warm-ivory dark:text-mistral-black flex items-center justify-center text-[14px] uppercase border border-mistral-black/10 dark:border-warm-ivory/20 group-hover:border-mistral-orange transition-colors shadow-mistral dark:shadow-none">
             {user.name.charAt(0)}
           </div>
           <svg className={`w-4 h-4 text-mistral-black/40 dark:text-warm-ivory/40 group-hover:text-mistral-black dark:group-hover:text-warm-ivory transition-transform ${menuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,16 +114,23 @@ export default function Topbar() {
         {menuOpen && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-            <div className="absolute right-0 top-full mt-2 w-56 bg-cream dark:bg-mistral-black border border-mistral-black/20 dark:border-warm-ivory/20 shadow-mistral z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute right-0 top-full mt-2 w-64 bg-warm-ivory/95 dark:bg-mistral-black/95 backdrop-blur-sm border border-mistral-black/15 dark:border-warm-ivory/20 shadow-mistral z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-4 border-b border-mistral-black/10 dark:border-warm-ivory/10">
-                <p className="text-[12px] text-mistral-black dark:text-warm-ivory font-normal uppercase tracking-widest">{user.name}</p>
-                <p className="text-[10px] text-mistral-black/60 dark:text-warm-ivory/60 font-normal">{user.email}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-mistral-black dark:bg-warm-ivory text-warm-ivory dark:text-mistral-black flex items-center justify-center text-[14px] uppercase border border-mistral-black/10 dark:border-warm-ivory/20">
+                    {user.name.charAt(0)}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[12px] text-mistral-black dark:text-warm-ivory font-normal uppercase tracking-widest truncate">{user.name}</p>
+                    <p className="text-[11px] text-mistral-black/60 dark:text-warm-ivory/60 font-normal truncate">{user.email}</p>
+                  </div>
+                </div>
               </div>
               <div className="py-2">
                 <Link 
                   to="/app/profile" 
                   onClick={() => setMenuOpen(false)}
-                  className="flex w-full px-4 py-2 text-[12px] text-mistral-black/70 dark:text-warm-ivory/70 hover:text-mistral-black dark:hover:text-warm-ivory hover:bg-mistral-black/5 dark:hover:bg-warm-ivory/5 transition-colors font-normal uppercase tracking-widest"
+                  className="flex w-[calc(100%-1rem)] mx-2 px-3 py-2 text-[12px] text-mistral-black/75 dark:text-warm-ivory/75 hover:text-mistral-black dark:hover:text-warm-ivory hover:bg-mistral-black/5 dark:hover:bg-warm-ivory/5 transition-colors font-normal uppercase tracking-widest"
                 >
                   Account Settings
                 </Link>
@@ -132,14 +138,14 @@ export default function Topbar() {
                   <Link 
                     to="/admin" 
                     onClick={() => setMenuOpen(false)}
-                    className="flex w-full px-4 py-2 text-[12px] text-mistral-black/70 dark:text-warm-ivory/70 hover:text-mistral-orange hover:bg-mistral-orange/5 transition-colors font-normal uppercase tracking-widest"
+                    className="flex w-[calc(100%-1rem)] mx-2 px-3 py-2 text-[12px] text-mistral-black/75 dark:text-warm-ivory/75 hover:text-mistral-orange hover:bg-mistral-orange/5 transition-colors font-normal uppercase tracking-widest"
                   >
                     Admin Dashboard
                   </Link>
                 )}
                 <button 
                   onClick={handleLogout}
-                  className="flex w-full text-left px-4 py-2 text-[12px] text-red-600 dark:text-mistral-orange hover:bg-red-50 dark:hover:bg-mistral-orange/10 transition-colors font-normal mt-2 border-t border-mistral-black/10 dark:border-warm-ivory/10 pt-2 uppercase tracking-widest"
+                  className="flex w-[calc(100%-1rem)] mx-2 text-left px-3 py-2 text-[12px] text-red-600 dark:text-mistral-orange hover:bg-red-50 dark:hover:bg-mistral-orange/10 transition-colors font-normal mt-2 border-t border-mistral-black/10 dark:border-warm-ivory/10 pt-3 uppercase tracking-widest"
                 >
                   Sign out
                 </button>

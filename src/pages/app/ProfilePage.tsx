@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthProvider';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
-  
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     logout();
   };
@@ -12,14 +13,34 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="max-w-5xl mx-auto py-12 px-6 w-full">
-      <h1 className="text-[clamp(32px,8vw,64px)] font-normal leading-[0.95] tracking-display uppercase mb-12 break-words">
-        ACCOUNT SETTINGS
-      </h1>
-      
+    <div className="max-w-5xl mx-auto py-12 px-6 w-full text-mistral-black dark:text-warm-ivory transition-colors">
+      {/* Back arrow */}
+      <button
+        onClick={() => navigate('/app')}
+        className="flex items-center gap-2 mb-12 text-mistral-black/60 dark:text-warm-ivory/60 hover:text-mistral-orange dark:hover:text-mistral-orange transition-colors group"
+        aria-label="Back to chat"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="transition-transform group-hover:-translate-x-1"
+        >
+          <path d="M19 12H5" />
+          <path d="M12 19l-7-7 7-7" />
+        </svg>
+        <span className="text-[13px] font-normal uppercase tracking-widest">Back</span>
+      </button>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* User Info Sidebar */}
-        <div className="md:col-span-1 space-y-8">
+        <div className="md:col-span-1 space-y-8 bg-white/70 dark:bg-mistral-black/40 border border-mistral-black/10 dark:border-warm-ivory/10 p-6 shadow-mistral dark:shadow-none">
           <div>
             <div className="w-24 h-24 bg-mistral-orange mb-4 flex items-center justify-center text-white text-[32px] font-normal uppercase rounded-none shadow-mistral">
               {user.name.charAt(0)}
@@ -27,12 +48,12 @@ export default function ProfilePage() {
             <h2 className="text-2xl font-normal leading-[1.15]">{user.name}</h2>
             <p className="text-mistral-black/60 dark:text-warm-ivory/60 text-[14px] font-normal">{user.email}</p>
           </div>
-          
+
           <div className="space-y-4 pt-8 border-t border-mistral-black/10 dark:border-warm-ivory/10">
             <Link to="/app/profile/edit" className="block w-full text-left text-[14px] font-normal uppercase tracking-wider hover:text-mistral-orange dark:hover:text-mistral-orange transition-colors">Edit Profile</Link>
             <Link to="/app/profile/billing" className="block w-full text-left text-[14px] font-normal uppercase tracking-wider hover:text-mistral-orange dark:hover:text-mistral-orange transition-colors">Billing</Link>
             <Link to="/app/profile/notifications" className="block w-full text-left text-[14px] font-normal uppercase tracking-wider hover:text-mistral-orange dark:hover:text-mistral-orange transition-colors">Notifications</Link>
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full text-left text-[14px] font-normal uppercase tracking-wider text-mistral-black/60 dark:text-warm-ivory/60 hover:text-red-500 transition-colors block mt-8"
             >
@@ -40,11 +61,11 @@ export default function ProfilePage() {
             </button>
           </div>
         </div>
-        
+
         {/* Activity / Settings Main */}
-        <div className="md:col-span-2 space-y-12">
+        <div className="md:col-span-2 space-y-10">
           <section>
-            <h3 className="text-[14px] font-normal uppercase tracking-widest text-mistral-black/50 dark:text-warm-ivory/50 mb-6 border-b border-mistral-black/10 dark:border-warm-ivory/10 pb-4">Usage Details</h3>
+            <h3 className="text-[14px] font-normal uppercase tracking-widest text-mistral-black/55 dark:text-warm-ivory/55 mb-5 border-b border-mistral-black/10 dark:border-warm-ivory/10 pb-3">Usage Details</h3>
             <div className="bg-white dark:bg-mistral-black p-8 border border-mistral-black/10 dark:border-warm-ivory/10 shadow-mistral dark:shadow-none rounded-none transition-colors">
               <div className="flex justify-between items-center mb-4">
                 <span className="font-normal text-[14px]">Current Plan</span>
@@ -59,9 +80,9 @@ export default function ProfilePage() {
               </div>
             </div>
           </section>
-          
+
           <section>
-            <h3 className="text-[14px] font-normal uppercase tracking-widest text-mistral-black/50 dark:text-warm-ivory/50 mb-6 border-b border-mistral-black/10 dark:border-warm-ivory/10 pb-4">Data Management</h3>
+            <h3 className="text-[14px] font-normal uppercase tracking-widest text-mistral-black/55 dark:text-warm-ivory/55 mb-5 border-b border-mistral-black/10 dark:border-warm-ivory/10 pb-3">Data Management</h3>
             <div className="bg-white dark:bg-mistral-black p-8 border border-mistral-black/10 dark:border-warm-ivory/10 shadow-mistral dark:shadow-none space-y-8 rounded-none transition-colors">
               <div>
                 <h4 className="font-normal mb-1">Clear Chat History</h4>

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../app/providers/ThemeProvider';
+import { useAuth } from '../../features/auth/context/AuthProvider';
 import logoPng from '../../pages/public/logo.png';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const { isAuthenticated } = useAuth();
   
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -52,7 +54,7 @@ export default function Navbar() {
           )}
         </button>
 
-        <Link to="/auth" className="bg-mistral-black dark:bg-warm-ivory text-white dark:text-mistral-black px-6 py-3 text-[14px] uppercase tracking-wider font-normal hover:bg-mistral-orange dark:hover:bg-mistral-orange transition-colors">Get Started</Link>
+        <Link to={isAuthenticated ? '/app' : '/auth'} className="bg-mistral-black dark:bg-warm-ivory text-white dark:text-mistral-black px-6 py-3 text-[14px] uppercase tracking-wider font-normal hover:bg-mistral-orange dark:hover:bg-mistral-orange transition-colors">{isAuthenticated ? 'Open App' : 'Get Started'}</Link>
       </div>
     </nav>
   );

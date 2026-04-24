@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../features/auth/context/AuthProvider';
 import logoPng from './logo.png';
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="flex flex-col w-full bg-warm-ivory dark:bg-mistral-black text-mistral-black dark:text-warm-ivory min-h-[100dvh]">
       {/* Hero Section */}
@@ -17,8 +20,8 @@ export default function LandingPage() {
             Search less. Find more. We combine localized scraping with advanced LLM ranking into one monolithic conversational interface.
           </p>
           <div className="mt-12 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link to="/auth" className="bg-mistral-black dark:bg-warm-ivory text-white dark:text-mistral-black p-[12px] font-normal uppercase tracking-wider text-[14px] hover:bg-mistral-orange dark:hover:bg-mistral-orange transition-colors text-center inline-block">
-              Get Started
+            <Link to={isAuthenticated ? '/app' : '/auth'} className="bg-mistral-black dark:bg-warm-ivory text-white dark:text-mistral-black p-[12px] font-normal uppercase tracking-wider text-[14px] hover:bg-mistral-orange dark:hover:bg-mistral-orange transition-colors text-center inline-block">
+              {isAuthenticated ? 'Open App' : 'Get Started'}
             </Link>
             <Link to="/about" className="bg-cream dark:bg-mistral-black/50 text-mistral-black dark:text-warm-ivory p-[12px] font-normal uppercase tracking-wider text-[14px] hover:bg-block-gold dark:hover:bg-mistral-orange/20 border border-mistral-black/10 dark:border-warm-ivory/10 transition-colors text-center inline-block">
               Read The Docs
