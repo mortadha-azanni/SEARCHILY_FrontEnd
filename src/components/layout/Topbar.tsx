@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthProvider';
 import { useMobileNav } from '../../app/providers/MobileNavProvider';
 import { useTheme } from '../../app/providers/ThemeProvider';
+import logoPng from '../../pages/public/logo.png';
 
 export default function Topbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -43,9 +44,14 @@ export default function Topbar() {
           </button>
         )}
         
-        <Link to="/" className="text-2xl font-normal tracking-tight flex items-center gap-2 group text-mistral-black dark:text-warm-ivory hover:text-mistral-orange transition-colors">
-          <div className="flex bg-gradient-to-r from-[#ffd900] via-[#ffa110] to-mistral-orange w-8 h-8 group-hover:opacity-90 transition-opacity"></div>
-          SEARCHILY
+        <Link to="/" className="flex items-center group transition-transform duration-300 ease-out hover:scale-[1.02]">
+          <div className="relative h-9 w-[72px] md:h-10 md:w-[84px] overflow-hidden transition-transform duration-300 ease-out group-hover:scale-[1.05]">
+            <img
+              src={logoPng}
+              alt="Searchily"
+              className="absolute inset-x-0 -top-[8%] h-[180%] w-full max-w-none object-cover object-top drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+            />
+          </div>
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-[14px]">
           <Link to="/app" className="text-mistral-black/70 dark:text-warm-ivory/70 hover:text-mistral-black dark:hover:text-warm-ivory transition-colors font-normal uppercase tracking-widest">Chat</Link>

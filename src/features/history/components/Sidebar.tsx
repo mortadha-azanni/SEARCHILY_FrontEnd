@@ -24,12 +24,12 @@ export default function Sidebar({ loadSession, removeSession, currentSessionId, 
   if (!user) return null;
 
   return (
-    <aside className={`flex flex-col bg-mistral-black text-white h-full border-r border-white/5 w-64 md:w-72 shrink-0 transition-colors duration-200 ${className}`}>
+    <aside className={`flex flex-col bg-warm-ivory text-mistral-black dark:bg-mistral-black dark:text-warm-ivory h-full border-r border-mistral-black/10 dark:border-white/5 w-64 md:w-72 shrink-0 transition-colors duration-200 ${className}`}>
       {/* Sidebar Header */}
-      <div className="h-14 flex items-center justify-between px-4 border-b border-white/5 shrink-0">
+      <div className="h-14 flex items-center justify-between px-4 border-b border-mistral-black/10 dark:border-white/5 shrink-0">
         <button 
           onClick={handleNewChat}
-          className="flex items-center gap-2 text-[12px] font-normal uppercase tracking-widest hover:text-mistral-orange transition-colors"
+          className="flex items-center gap-2 text-[12px] font-normal uppercase tracking-widest text-mistral-black/70 dark:text-warm-ivory/70 hover:text-mistral-orange transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -43,13 +43,13 @@ export default function Sidebar({ loadSession, removeSession, currentSessionId, 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {groupedHistory.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-[12px] text-white/30 uppercase tracking-widest font-normal">No history yet</p>
+            <p className="text-[12px] text-mistral-black/30 dark:text-warm-ivory/30 uppercase tracking-widest font-normal">No history yet</p>
           </div>
         ) : (
           <div className="py-4 space-y-8">
             {groupedHistory.map((group) => (
               <div key={group.label} className="px-4">
-                <h3 className="text-[10px] font-normal uppercase tracking-[0.2em] text-white/30 mb-4 px-2">{group.label}</h3>
+                <h3 className="text-[10px] font-normal uppercase tracking-[0.2em] text-mistral-black/30 dark:text-warm-ivory/30 mb-4 px-2">{group.label}</h3>
                 <div className="space-y-1">
                   {group.items.map((item) => {
                     const firstUserMessage = item.state.messages.find(m => m.role === 'user')?.content || 'Untitled Chat';
@@ -61,8 +61,8 @@ export default function Sidebar({ loadSession, removeSession, currentSessionId, 
                           onClick={() => loadSession?.(item.id)}
                           className={`w-full text-left px-3 py-2 text-[13px] font-normal truncate transition-colors border border-transparent ${
                             isActive 
-                              ? 'bg-white/10 text-white border-white/10' 
-                              : 'text-white/60 hover:text-white hover:bg-white/5'
+                              ? 'bg-mistral-black/5 dark:bg-white/10 text-mistral-black dark:text-white border-mistral-black/10 dark:border-white/10' 
+                              : 'text-mistral-black/60 dark:text-white/60 hover:text-mistral-black dark:hover:text-white hover:bg-mistral-black/5 dark:hover:bg-white/5'
                           }`}
                         >
                           {firstUserMessage}
@@ -73,7 +73,7 @@ export default function Sidebar({ loadSession, removeSession, currentSessionId, 
                               e.stopPropagation();
                               removeSession(item.id);
                             }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-white/30 hover:text-red-500 transition-all"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-mistral-black/30 dark:text-white/30 hover:text-red-500 transition-all"
                             aria-label="Delete session"
                           >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
@@ -96,13 +96,13 @@ export default function Sidebar({ loadSession, removeSession, currentSessionId, 
       <div className="p-4 border-t border-white/5 shrink-0">
         <Link 
           to="/app/profile"
-          className="flex items-center gap-3 w-full p-2 hover:bg-white/5 transition-colors group"
+          className="flex items-center gap-3 w-full p-2 hover:bg-mistral-black/5 dark:hover:bg-white/5 transition-colors group"
         >
           <div className="w-8 h-8 bg-mistral-orange text-white flex items-center justify-center text-[14px] font-normal uppercase shadow-mistral">
             {user.name.charAt(0)}
           </div>
           <div className="flex-1 text-left">
-            <p className="text-[12px] font-normal uppercase tracking-widest text-white/80 group-hover:text-white">User Settings</p>
+            <p className="text-[12px] font-normal uppercase tracking-widest text-mistral-black/80 dark:text-warm-ivory/80 group-hover:text-mistral-black dark:group-hover:text-white">User Settings</p>
           </div>
         </Link>
       </div>

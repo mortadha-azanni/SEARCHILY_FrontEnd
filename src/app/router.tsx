@@ -18,6 +18,7 @@ const AboutPage = React.lazy(() => import('../pages/public/AboutPage'));
 const LegalPage = React.lazy(() => import('../pages/public/LegalPage'));
 const AuthPage = React.lazy(() => import('../pages/public/AuthPage'));
 const SignUpPage = React.lazy(() => import('../pages/public/SignUpPage.tsx'));
+const BusinessAccountPage = React.lazy(() => import('../pages/public/BusinessAccountPage'));
 const NotFoundPage = React.lazy(() => import('../pages/public/NotFoundPage'));
 
 // App Pages (Lazy)
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
       { path: 'legal', element: <Suspense fallback={<PageLoader />}><LegalPage /></Suspense> },
       { path: 'auth', element: <Suspense fallback={<PageLoader />}><AuthPage /></Suspense> },
       { path: 'signup', element: <Suspense fallback={<PageLoader />}><SignUpPage /></Suspense> },
+      { path: 'businessaccountpage', element: <Suspense fallback={<PageLoader />}><BusinessAccountPage /></Suspense> },
       { path: 'verify-email', element: <Suspense fallback={<PageLoader />}><VerifyEmailPage /></Suspense> },
       { path: 'auth/callback', element: <Suspense fallback={<PageLoader />}><AuthCallback /></Suspense> },
     ],

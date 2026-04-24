@@ -130,7 +130,7 @@ export default function AuthPage() {
           {/* Google OAuth Button */}
 
           <a href="http://localhost:8000/auth/google"
-          className="w-full py-4 border border-mistral-black/20 text-mistral-black font-normal uppercase tracking-wider text-sm hover:border-mistral-orange transition-colors flex items-center justify-center gap-3"
+          className="w-full py-4 bg-white dark:bg-mistral-black border border-mistral-black/20 dark:border-warm-ivory/20 text-mistral-black dark:text-warm-ivory font-normal uppercase tracking-wider text-sm hover:border-mistral-orange dark:hover:border-mistral-orange transition-colors flex items-center justify-center gap-3"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
@@ -149,14 +149,6 @@ export default function AuthPage() {
             <span className="h-px flex-1 bg-mistral-black/20 dark:bg-warm-ivory/20"></span>
           </div>
 
-          <div className="mt-6">
-            <Link
-              to="/business-account"
-              className="w-full block p-4 border border-mistral-black/30 dark:border-warm-ivory/30 bg-transparent text-mistral-black dark:text-warm-ivory font-normal uppercase tracking-widest text-[14px] hover:border-mistral-orange/60 hover:text-mistral-orange dark:hover:text-mistral-orange hover:bg-mistral-orange/5 transition-colors shadow-mistral rounded-none text-center"
-            >
-              APPLY FOR A BUSINESS ACCOUNT -&gt;
-            </Link>
-          </div>
 
           <div className="mt-8 pt-8 border-t border-mistral-black/10 dark:border-warm-ivory/10 text-center transition-colors">
             <p className="text-[14px] text-mistral-black/60 dark:text-warm-ivory/60 font-normal">

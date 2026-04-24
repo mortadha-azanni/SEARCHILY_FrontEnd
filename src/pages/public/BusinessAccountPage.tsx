@@ -11,7 +11,6 @@ export default function BusinessAccountPage() {
     contactName: '',
     email: '',
     phone: '',
-    teamSize: '',
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
@@ -48,16 +47,15 @@ export default function BusinessAccountPage() {
             BUSINESS ACCOUNT
           </h1>
           <p className="text-mistral-black/60 dark:text-warm-ivory/60 mt-4 text-[18px] max-w-md mx-auto leading-relaxed">
-            Unlock dedicated API access, team management, and priority support for your organization.
+            Connect your commerce stack to Searchily with catalog sync, advanced reporting, and priority support.
           </p>
         </div>
 
         {/* Features Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
           {[
-            { label: 'API Access', desc: 'Dedicated endpoints' },
-            { label: 'Team Seats', desc: 'Unlimited members' },
-            { label: 'Priority Support', desc: '24/7 dedicated line' },
+            { label: 'Seamless Catalog Integration', desc: 'Sync your storefront inventory and product feeds directly into Searchily to make your catalog instantly discoverable.' },
+            { label: 'Analytics & Insights', desc: 'Track search trends, catalog performance, and inventory shifts with business-grade reporting dashboards.' },
           ].map((feature, i) => (
             <div key={i} className="bg-white dark:bg-[#111] border border-mistral-black/10 dark:border-warm-ivory/10 p-5 transition-colors group hover:border-mistral-orange/30">
               <div className="w-8 h-0.5 bg-mistral-orange mb-3 group-hover:w-12 transition-all duration-300"></div>

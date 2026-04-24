@@ -8,7 +8,6 @@ export interface BusinessFormData {
   contactName: string;
   email: string;
   phone: string;
-  teamSize: string;
   message: string;
 }
 
@@ -57,13 +56,11 @@ export function BusinessOnboardingForm({ formData, onChange, onSubmit, isLoading
                 className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange outline-none transition-colors rounded-none font-normal text-mistral-black dark:text-warm-ivory appearance-none cursor-pointer"
               >
                 <option value="" className="dark:bg-mistral-black">Select industry</option>
-                <option value="ecommerce" className="dark:bg-mistral-black">E-Commerce</option>
-                <option value="retail" className="dark:bg-mistral-black">Retail</option>
-                <option value="technology" className="dark:bg-mistral-black">Technology</option>
-                <option value="finance" className="dark:bg-mistral-black">Finance</option>
-                <option value="healthcare" className="dark:bg-mistral-black">Healthcare</option>
-                <option value="education" className="dark:bg-mistral-black">Education</option>
-                <option value="media" className="dark:bg-mistral-black">Media & Entertainment</option>
+                <option value="ecommerce" className="dark:bg-mistral-black">E-Commerce / Online Retail</option>
+                <option value="marketplace" className="dark:bg-mistral-black">Marketplace / Multi-Vendor</option>
+                <option value="retail" className="dark:bg-mistral-black">Physical Retail & Omnichannel</option>
+                <option value="saas" className="dark:bg-mistral-black">SaaS / Technology</option>
+                <option value="b2b" className="dark:bg-mistral-black">B2B / Wholesale</option>
                 <option value="other" className="dark:bg-mistral-black">Other</option>
               </select>
             </div>
@@ -127,23 +124,6 @@ export function BusinessOnboardingForm({ formData, onChange, onSubmit, isLoading
                 placeholder="+1 (555) 000-0000"
                 className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange outline-none transition-colors rounded-none font-normal text-mistral-black dark:text-warm-ivory placeholder-mistral-black/30 dark:placeholder-warm-ivory/30"
               />
-            </div>
-            <div>
-              <label className="block text-[13px] font-normal uppercase tracking-widest text-mistral-black/70 dark:text-warm-ivory/70 mb-2">Team Size *</label>
-              <select
-                name="teamSize"
-                required
-                value={formData.teamSize}
-                onChange={onChange}
-                className="w-full p-4 bg-transparent border border-mistral-black/20 dark:border-warm-ivory/20 hover:border-mistral-orange/50 focus:border-mistral-orange focus:ring-1 focus:ring-mistral-orange outline-none transition-colors rounded-none font-normal text-mistral-black dark:text-warm-ivory appearance-none cursor-pointer"
-              >
-                <option value="" className="dark:bg-mistral-black">Select size</option>
-                <option value="1-10" className="dark:bg-mistral-black">1–10 people</option>
-                <option value="11-50" className="dark:bg-mistral-black">11–50 people</option>
-                <option value="51-200" className="dark:bg-mistral-black">51–200 people</option>
-                <option value="201-1000" className="dark:bg-mistral-black">201–1,000 people</option>
-                <option value="1000+" className="dark:bg-mistral-black">1,000+ people</option>
-              </select>
             </div>
           </div>
         </div>
