@@ -143,6 +143,21 @@ export default function AuthPage() {
             </a>
           </form>
 
+          <div className="mt-6 flex items-center gap-3 text-[11px] font-normal uppercase tracking-[0.3em] text-mistral-black/40 dark:text-warm-ivory/40">
+            <span className="h-px flex-1 bg-mistral-black/20 dark:bg-warm-ivory/20"></span>
+            <span className="px-1">or</span>
+            <span className="h-px flex-1 bg-mistral-black/20 dark:bg-warm-ivory/20"></span>
+          </div>
+
+          <div className="mt-6">
+            <Link
+              to="/business-account"
+              className="w-full block p-4 border border-mistral-black/30 dark:border-warm-ivory/30 bg-transparent text-mistral-black dark:text-warm-ivory font-normal uppercase tracking-widest text-[14px] hover:border-mistral-orange/60 hover:text-mistral-orange dark:hover:text-mistral-orange hover:bg-mistral-orange/5 transition-colors shadow-mistral rounded-none text-center"
+            >
+              APPLY FOR A BUSINESS ACCOUNT -&gt;
+            </Link>
+          </div>
+
           <div className="mt-8 pt-8 border-t border-mistral-black/10 dark:border-warm-ivory/10 text-center transition-colors">
             <p className="text-[14px] text-mistral-black/60 dark:text-warm-ivory/60 font-normal">
               Don't have an account?{' '}
