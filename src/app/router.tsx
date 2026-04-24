@@ -17,10 +17,12 @@ const LandingPage = React.lazy(() => import('../pages/public/LandingPage'));
 const AboutPage = React.lazy(() => import('../pages/public/AboutPage'));
 const LegalPage = React.lazy(() => import('../pages/public/LegalPage'));
 const AuthPage = React.lazy(() => import('../pages/public/AuthPage'));
+const SignUpPage = React.lazy(() => import('../pages/public/SignUpPage.tsx'));
 const NotFoundPage = React.lazy(() => import('../pages/public/NotFoundPage'));
 
 // App Pages (Lazy)
 const AIChatPage = React.lazy(() => import('../pages/app/AIChatPage'));
+const VerifyEmailPage = React.lazy(() => import('../pages/app/VerifyEmailPage'));
 const ProfilePage = React.lazy(() => import('../pages/app/ProfilePage'));
 const EditProfilePage = React.lazy(() => import('../pages/app/EditProfilePage'));
 const BillingPage = React.lazy(() => import('../pages/app/BillingPage'));
@@ -53,6 +55,8 @@ export const router = createBrowserRouter([
       { path: 'about', element: <Suspense fallback={<PageLoader />}><AboutPage /></Suspense> },
       { path: 'legal', element: <Suspense fallback={<PageLoader />}><LegalPage /></Suspense> },
       { path: 'auth', element: <Suspense fallback={<PageLoader />}><AuthPage /></Suspense> },
+      { path: 'signup', element: <Suspense fallback={<PageLoader />}><SignUpPage /></Suspense> },
+      { path: 'verify-email', element: <Suspense fallback={<PageLoader />}><VerifyEmailPage /></Suspense> },
       { path: 'auth/callback', element: <Suspense fallback={<PageLoader />}><AuthCallback /></Suspense> },
     ],
   },

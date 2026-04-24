@@ -7,9 +7,16 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ requireAdmin = false }: ProtectedRouteProps) {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role, isLoading } = useAuth();
+
+  console.log("[ProtectedRoute] isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "role:", role);
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!isAuthenticated) {
+    console.log("[ProtectedRoute] not authenticated — redirecting to /auth");
     return <Navigate to="/auth" replace />;
   }
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { api } from '../../../services/api/client';
 
 export interface User {
   id: string;
@@ -6,6 +7,7 @@ export interface User {
   email: string;
   role: string;
   avatar?: string;
+  email_verified?: boolean;
 }
 
 interface AuthContextType {
@@ -30,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(!!token);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
     if (!token) {
@@ -40,25 +42,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     setIsLoading(true);
-    // Mock API call
-    setTimeout(() => {
-      if (role === 'admin') {
-        setUser({
-          id: 'u1',
-          name: 'Admin User',
-          email: 'admin@searchily.ai',
-          role: 'admin'
-        });
-      } else {
-        setUser({
-          id: 'u2',
-          name: 'Mock User',
-          email: 'user@example.com',
-          role: 'user'
-        });
+    try {
+      const me = await api.getMe();
+      if (me?.email) {
+        localStorage.setItem('searchily_user_email', me.email);
       }
+      if (me?.name) {
+        localStorage.setItem('searchily_user_name', me.name);
+      }
+      setUser({
+        id: me.id,
+        name: me.name,
+        email: me.email,
+        role: me.role ?? role ?? 'user',
+        avatar: me.avatar_url,
+        email_verified: me.email_verified ?? null,
+      });
+    } catch {
+      const fallbackEmail = localStorage.getItem('searchily_user_email') ?? 'user@example.com';
+      const fallbackName = localStorage.getItem('searchily_user_name') ?? fallbackEmail.split('@')[0] ?? 'User';
+      const fallbackRole = role ?? localStorage.getItem('searchily_user_role') ?? 'user';
+
+      setUser({
+        id: 'fallback-user',
+        name: fallbackName,
+        email: fallbackEmail,
+        role: fallbackRole,
+        email_verified: undefined,
+      });
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   }, [token, role]);
 
   useEffect(() => {

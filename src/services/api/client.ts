@@ -23,9 +23,18 @@ client.interceptors.request.use((config) => {
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const requestUrl = String(error?.config?.url ?? '');
+    const isAuthRequest =
+      requestUrl.includes('/auth/login') ||
+      requestUrl.includes('/auth/register') ||
+      requestUrl.includes('/auth/admin/login');
+    const hasToken = !!localStorage.getItem('searchily_auth_token');
+
+    if (error.response?.status === 401 && hasToken && !isAuthRequest) {
       localStorage.removeItem('searchily_auth_token');
       localStorage.removeItem('searchily_user_role');
+      localStorage.removeItem('searchily_user_email');
+      localStorage.removeItem('searchily_user_name');
       // Use BASE_URL so the redirect works on any deployment path
       window.location.href = `${import.meta.env.BASE_URL}auth`;
     }
@@ -36,6 +45,21 @@ client.interceptors.response.use(
 export const api = {
   login: async (credentials: any) => {
     const response = await client.post('/auth/login', credentials);
+    return response.data;
+  },
+
+  register: async (payload: any) => {
+    const response = await client.post('/auth/register', payload);
+    return response.data;
+  },
+
+  getMe: async () => {
+    const response = await client.get('/auth/me');
+    return response.data;
+  },
+
+  sendVerificationEmail: async (email: string) => {
+    const response = await client.post('/auth/send-verification', { email });
     return response.data;
   },
 

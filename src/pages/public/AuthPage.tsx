@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthProvider';
-
-const getErrorMessage = (err: unknown, fallback: string) => {
-  if (err && typeof err === 'object') {
-    const maybeError = err as { message?: string; response?: { data?: { message?: string } } };
-    return maybeError.response?.data?.message ?? maybeError.message ?? fallback;
-  }
-  return fallback;
-};
+import { api } from '../../services/api/client';
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   
   const [email, setEmail] = useState('');
@@ -20,6 +14,7 @@ export default function AuthPage() {
   const [mockMessage, setMockMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const registrationMessage = (location.state as { message?: string } | null)?.message;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,21 +24,27 @@ export default function AuthPage() {
     try {
       // Use the actual backend API for authentication
       const response = await api.login({ email, password });
+      console.log('[AuthPage] Login API reply:', response);
+      const authToken = response?.token ?? response?.access_token;
+      const userRole = response?.role ?? 'user';
+
+      console.log('[AuthPage] Token before redirect:', authToken);
+
+      if (!authToken) {
+        throw new Error('Login response is missing token/access_token.');
+      }
+
+      localStorage.setItem('searchily_user_email', email);
       
       // Update global context & local storage using context's login method
-      login(response.token, response.role);
+      login(authToken, userRole);
       
-      navigate('/app');
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Invalid credentials or system error. Please try again.'));
+      navigate('/app', { replace: true });
+    } catch (err: any) {
+      setError(err.response?.data?.detail || err.response?.data?.message || 'Invalid credentials or system error. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleMockSignup = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setMockMessage('Sign up flow mock: Registration form not active. Use "Sign In" with any credentials.');
   };
 
   return (
@@ -61,6 +62,12 @@ export default function AuthPage() {
             <button onClick={() => setMockMessage(null)} className="text-mistral-black/50 dark:text-warm-ivory/50 hover:text-mistral-black dark:hover:text-warm-ivory ml-4">
               ✕
             </button>
+          </div>
+        )}
+
+        {registrationMessage && (
+          <div className="mb-6 bg-emerald-50 dark:bg-emerald-900/20 p-4 text-[14px] font-normal text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 shadow-mistral transition-colors">
+            {registrationMessage}
           </div>
         )}
 
@@ -139,7 +146,7 @@ export default function AuthPage() {
           <div className="mt-8 pt-8 border-t border-mistral-black/10 dark:border-warm-ivory/10 text-center transition-colors">
             <p className="text-[14px] text-mistral-black/60 dark:text-warm-ivory/60 font-normal">
               Don't have an account?{' '}
-              <button onClick={handleMockSignup} className="font-normal text-mistral-orange hover:text-mistral-orange/80 underline transition-colors">Sign up</button>
+              <Link to="/signup" className="font-normal text-mistral-orange hover:text-mistral-orange/80 underline transition-colors">Sign up</Link>
             </p>
           </div>
         </div>
